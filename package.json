@@ -1,6 +1,6 @@
 {
   "name": "@persian-web/core",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Modern JavaScript and TypeScript utilities for Persian and Farsi web development — Jalali calendar dates, Persian digits and number formatting, RTL helpers, typography, Iranian phone numbers, and national ID validation.",
   "keywords": [
     "persian",

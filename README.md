@@ -227,7 +227,7 @@ See [CHANGELOG.md](./CHANGELOG.md) for release notes.
 
 ## Roadmap
 
-Current version is **`0.1.2`** (pre-1.0). Planned work, in priority order:
+Current version is **`0.1.3`** (pre-1.0). Planned work, in priority order:
 
 1. **API freeze toward `1.0.0`** — stabilize option names, result unions, and subpath exports; document breaking changes in [CHANGELOG.md](./CHANGELOG.md) before the major bump.
 2. **Release automation** — keep trusted publishing / CI green on every release tag.

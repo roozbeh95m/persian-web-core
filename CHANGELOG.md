@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] - 2026-08-12
+
+### Changed
+
+- Ship npm discoverability improvements that landed after `0.1.2` was already published: richer `description`, `keywords`, `author`, README, `CONTRIBUTING.md`, and `examples/`.
+
+### Notes
+
+- No public API or runtime behavior changes. npm versions are immutable, so this patch republishes the docs/metadata work under a new version.
+
+[0.1.3]: https://github.com/roozbeh95m/persian-web-core/releases/tag/v0.1.3
+
 ## [0.1.2] - 2026-08-12
 
 ### Changed
@@ -17,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Notes
 
 - No public API or runtime behavior changes.
+- The discoverability file changes above were committed after this version was already on npm; consumers get them from `0.1.3+`.
 
 [0.1.2]: https://github.com/roozbeh95m/persian-web-core/releases/tag/v0.1.2
 
