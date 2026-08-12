@@ -10,6 +10,7 @@ export {
   isValidIranianPhone,
   normalizePhone,
 } from './phone/index.js';
+export { isValidNationalId, validateNationalId } from './national-id/index.js';
 export type {
   Currency,
   CurrencyDigits,
@@ -31,3 +32,7 @@ export type {
   IranianPhoneDigits,
   IranianPhoneFormat,
 } from './phone/index.js';
+export type {
+  NationalIdInvalidReason,
+  ValidateNationalIdResult,
+} from './national-id/index.js';

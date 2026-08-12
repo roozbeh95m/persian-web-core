@@ -38,11 +38,19 @@ describe('package exports and build layout', () => {
     });
   });
 
+  it('exposes the national-id subpath export', () => {
+    expect(packageJson.exports['./national-id']).toEqual({
+      types: './dist/national-id/index.d.ts',
+      import: './dist/national-id/index.js',
+    });
+  });
+
   it('includes format in the root export graph only via explicit re-exports', () => {
     const rootSource = readFileSync(join(packageRoot, 'src/index.ts'), 'utf8');
     expect(rootSource).toContain("from './format/index.js'");
     expect(rootSource).toContain("from './currency/index.js'");
     expect(rootSource).toContain("from './phone/index.js'");
+    expect(rootSource).toContain("from './national-id/index.js'");
   });
 
   it('emits standalone format build artifacts', () => {
@@ -64,5 +72,12 @@ describe('package exports and build layout', () => {
     const phoneSource = readFileSync(phoneEntry, 'utf8');
     expect(phoneSource).toContain('normalizePhone');
     expect(phoneSource).not.toContain('normalizePersian');
+  });
+
+  it('emits standalone national-id build artifacts', () => {
+    const nationalIdEntry = join(packageRoot, 'dist/national-id/index.js');
+    const nationalIdSource = readFileSync(nationalIdEntry, 'utf8');
+    expect(nationalIdSource).toContain('validateNationalId');
+    expect(nationalIdSource).not.toContain('normalizePersian');
   });
 });

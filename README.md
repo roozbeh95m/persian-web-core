@@ -278,15 +278,78 @@ For `IRT`, `'symbol'` shows `تومان` (`fa-IR`) or `IRT` (`en-US`). `'name'` 
 - Uses native `Intl.NumberFormat` for `IRR`, `USD`, and `EUR`; `IRT` is formatted manually.
 - Negative values use locale-appropriate minus signs (`-` in `en-US`, `‎−` in `fa-IR`).
 
+## National ID
+
+Validate Iranian national IDs (کد ملی): ten-digit identifiers with a modulo-11 check digit.
+
+### `isValidNationalId(value)`
+
+Returns `true` when the input is a valid national ID, otherwise `false`.
+
+```ts
+import { isValidNationalId } from '@persian-web/core';
+// or: import { isValidNationalId } from '@persian-web/core/national-id';
+
+isValidNationalId('0123456789'); // true
+isValidNationalId('0123456780'); // false
+isValidNationalId('1111111111'); // false
+isValidNationalId('۰۱۲۳۴۵۶۷۸۹'); // true (Persian digits)
+```
+
+### `validateNationalId(value)`
+
+Returns a structured result with an explicit rejection reason when invalid.
+
+```ts
+import { validateNationalId } from '@persian-web/core';
+// or: import { validateNationalId } from '@persian-web/core/national-id';
+
+validateNationalId('0123456789');
+// { valid: true }
+
+validateNationalId('0123456780');
+// { valid: false, reason: 'invalid_checksum' }
+
+validateNationalId('123456789');
+// { valid: false, reason: 'invalid_length' }
+
+validateNationalId('012-345-6789');
+// { valid: false, reason: 'invalid_format' }
+
+validateNationalId('1111111111');
+// { valid: false, reason: 'invalid_repeated_digits' }
+```
+
+#### Rejection reasons
+
+| Reason                    | When it applies                                                               |
+| ------------------------- | ----------------------------------------------------------------------------- |
+| `invalid_length`          | Empty input or not exactly ten digits after trim and digit-script conversion. |
+| `invalid_format`          | Non-digit characters remain (spaces, hyphens, letters, punctuation, etc.).    |
+| `invalid_repeated_digits` | All ten digits are identical (for example `0000000000` or `5555555555`).      |
+| `invalid_checksum`        | Ten digits with a failing check digit.                                        |
+
+### Validation behavior
+
+- **Digit scripts:** Persian (`۰–۹`) and Arabic-Indic (`٠–٩`) digits are converted to English before validation.
+- **Whitespace:** Leading and trailing whitespace is trimmed. Internal separators are **not** removed.
+- **Length:** Exactly ten digits are required.
+- **Repeated digits:** Sequences where every digit is the same are rejected.
+- **Check digit:** The tenth digit is validated with the standard Iranian weighted-sum modulo-11 algorithm applied to the first nine digits.
+
+Inputs are never mutated. Unrelated characters are not normalized away.
+
 ## Entry points
 
-| Import                        | Exports                                                                             |
-| ----------------------------- | ----------------------------------------------------------------------------------- |
-| `@persian-web/core`           | Full public API (digits + normalize + format + currency)                            |
-| `@persian-web/core/digits`    | `toPersianDigits`, `toEnglishDigits`                                                |
-| `@persian-web/core/normalize` | `normalizePersian`, `NormalizePersianOptions`, `DigitNormalization`                 |
-| `@persian-web/core/format`    | `formatNumber`, `FormatNumberOptions`, `FormatNumberDigits`, `FormatNumberNotation` |
-| `@persian-web/core/currency`  | `formatCurrency`, `formatToman`, `formatRial`, currency types                       |
+| Import                          | Exports                                                                                          |
+| ------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `@persian-web/core`             | Full public API (digits + normalize + format + currency + phone + national-id)                   |
+| `@persian-web/core/digits`      | `toPersianDigits`, `toEnglishDigits`                                                             |
+| `@persian-web/core/normalize`   | `normalizePersian`, `NormalizePersianOptions`, `DigitNormalization`                              |
+| `@persian-web/core/format`      | `formatNumber`, `FormatNumberOptions`, `FormatNumberDigits`, `FormatNumberNotation`              |
+| `@persian-web/core/currency`    | `formatCurrency`, `formatToman`, `formatRial`, currency types                                    |
+| `@persian-web/core/phone`       | `normalizePhone`, `isValidIranianPhone`, `formatIranianPhone`, phone types                       |
+| `@persian-web/core/national-id` | `isValidNationalId`, `validateNationalId`, `NationalIdInvalidReason`, `ValidateNationalIdResult` |
 
 ## License
 

@@ -5,6 +5,7 @@ import * as currency from './currency/index.js';
 import * as digits from './digits/index.js';
 import * as format from './format/index.js';
 import * as normalize from './normalize/index.js';
+import * as nationalId from './national-id/index.js';
 import * as phone from './phone/index.js';
 
 describe('@persian-web/core', () => {
@@ -62,5 +63,20 @@ describe('@persian-web/core', () => {
     expect(core.normalizePhone).toBe(phone.normalizePhone);
     expect(core.isValidIranianPhone).toBe(phone.isValidIranianPhone);
     expect(core.formatIranianPhone).toBe(phone.formatIranianPhone);
+  });
+
+  it('exports national ID helpers from the root entry', () => {
+    expect(core.isValidNationalId).toBeTypeOf('function');
+    expect(core.validateNationalId).toBeTypeOf('function');
+    expect(core.isValidNationalId('0123456789')).toBe(true);
+    expect(core.validateNationalId('0123456780')).toEqual({
+      valid: false,
+      reason: 'invalid_checksum',
+    });
+  });
+
+  it('re-exports the same functions as @persian-web/core/national-id', () => {
+    expect(core.isValidNationalId).toBe(nationalId.isValidNationalId);
+    expect(core.validateNationalId).toBe(nationalId.validateNationalId);
   });
 });
