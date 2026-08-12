@@ -1,4 +1,5 @@
 import { toEnglishDigits, toPersianDigits } from '../digits/index.js';
+import { getCachedNumberFormat } from '../shared/cached-number-format.js';
 
 import type {
   Currency,
@@ -79,7 +80,7 @@ function formatIntlCurrency(
   options: FormatCurrencyOptions | undefined,
 ): string {
   const locale = resolveLocale(options);
-  const formatted = new Intl.NumberFormat(locale, {
+  const formatted = getCachedNumberFormat(locale, {
     style: 'currency',
     currency,
     currencyDisplay: resolveCurrencyDisplay(options),
@@ -116,7 +117,7 @@ function formatIrtCurrency(
   const currencyDisplay = resolveCurrencyDisplay(options);
   const label = resolveIrtSymbolLabel(locale, currencyDisplay);
   const formattedNumber = applyDigits(
-    new Intl.NumberFormat(locale, {
+    getCachedNumberFormat(locale, {
       ...resolveFractionDigits('IRT', options),
       useGrouping: true,
     }).format(Math.abs(value)),

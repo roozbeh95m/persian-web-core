@@ -1,4 +1,5 @@
 import { normalizePersian } from '../normalize/normalize-persian.js';
+import { foldAsciiLatinCase } from '../shared/fold-ascii-latin-case.js';
 
 /** Zero-width non-joiner — treated as a word separator in slugs. */
 const ZWNJ = '\u200C';
@@ -9,34 +10,6 @@ const SLUG_NORMALIZE_OPTIONS = {
   removeDiacritics: true,
   normalizeWhitespace: true,
 } as const;
-
-/**
- * Folds ASCII Latin uppercase letters (`A–Z`) to lowercase.
- * Non-ASCII letters (including Persian) are left unchanged.
- */
-function foldAsciiLatinCase(input: string): string {
-  let hasUpper = false;
-  for (let i = 0; i < input.length; i++) {
-    const code = input.charCodeAt(i);
-    if (code >= 65 && code <= 90) {
-      hasUpper = true;
-      break;
-    }
-  }
-
-  if (!hasUpper) {
-    return input;
-  }
-
-  const chars = [...input];
-  for (let i = 0; i < chars.length; i++) {
-    const code = chars[i]!.charCodeAt(0);
-    if (code >= 65 && code <= 90) {
-      chars[i] = String.fromCharCode(code + 32);
-    }
-  }
-  return chars.join('');
-}
 
 /** Replaces ZWNJ with a hyphen so compound forms stay readable in URLs. */
 function zwnjToHyphen(input: string): string {

@@ -48,9 +48,9 @@ export default tseslint.config(
     },
   },
   {
-    files: ['**/*.{test,spec}.ts'],
+    files: ['**/*.{test,spec,bench}.ts'],
     rules: {
-      // Allow focused assertion style in tests without weakening source rules.
+      // Allow focused assertion style in tests/benches without weakening source rules.
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/unbound-method': 'off',
     },

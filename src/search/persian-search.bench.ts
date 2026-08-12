@@ -1,123 +1,100 @@
 import { bench, describe } from 'vitest';
 
 import {
+  BENCH_OPTIONS,
+  BENCH_OPTIONS_HEAVY,
+  BENCH_OPTIONS_STRESS,
+  CATALOG_1K,
+  LARGE_TEXT,
+  MEDIUM_NOISY,
+  PRODUCT_TITLES,
+  SEARCH_QUERIES,
+  SMALL_NOISY,
+} from '../benchmark/fixtures.js';
+import {
   clearSearchNormalizeCache,
   includesPersian,
-  matchesPersian,
   normalizeForSearch,
 } from './persian-search.js';
 
-const ZWNJ = '\u200C';
+describe('normalizeForSearch', () => {
+  let uniqueSuffix = 0;
 
-/** Realistic e-commerce product titles (mixed Arabic/Persian, Latin, digits). */
-const PRODUCT_CATALOG = [
-  'گوشی موبایل سامسونگ Galaxy S24 Ultra 256GB دو سیم‌کارت',
-  'گوشی سامسونگ كلاسیک B310 با باتری قوی',
-  'گوشی اپل iPhone 15 Pro Max 256GB',
-  'لپ‌تاپ ایسوس VivoBook 15 OLED Core i7',
-  'لپ‌تاپ لنوو ThinkPad X1 Carbon Gen 11',
-  'هدفون بلوتوثی Sony WH-1000XM5 با نویزکنسلینگ',
-  'هدفون Apple AirPods Pro (نسل ۲)',
-  'کتاب برنامه‌نویسی JavaScript مدرن - نسخه ۱۴۰۳',
-  'کتاب آموزش React.js و TypeScript',
-  'شامپو تقویت‌کننده مو سریتا مناسب موهای خشک',
-  'کرم آبرسان پوست صورت لافارر 50ml',
-  'یخچال فریزر دو قلو ال‌جی 34 فوت اینورتر',
-  'ماشین لباسشویی سامسونگ 9 کیلوگرم مدل WW90',
-  'تلویزیون 55 اینچ سامسونگ Crystal UHD 4K',
-  'کفش ورزشی نایک Air Max 270 مردانه',
-  'کفش پیاده‌روی آدidas Ultraboost 23',
-  'ساعت هوشمند شیائومی Mi Band 8 Pro',
-  'ساعت اپل Apple Watch Series 9 GPS',
-  'قیمت ویژه: ۲۵٬۹۰۰٬۰۰۰ ریال — ارسال رایگان',
-  'تخفیف ۱۵٪ برای خرید بالای ۵٬۰۰۰٬۰۰۰ تومان',
-  'آدرس فروشگاه: تهران، خیابان ولیعصر، پلاک ۱۲۳، واحد ۴',
-  'ارسال به شهرستان — زمان تحویل ۲ تا ۵ روز کاری',
-  'پشتیبانی ۲۴ ساعته — تماس: ۰۲۱-۱۲۳۴۵۶۷۸',
-  'گارانتی ۱۸ ماهه شرکتی — کد رهگیری ١٤٠٣٠٩٨٧٦',
-  'محصول اصل — ساخت کره جنوبی',
-];
-
-/** Repeated user queries simulating live search/filter input. */
-const SEARCH_QUERIES = [
-  'سامسونگ',
-  'سامسونگ كلاس',
-  'galaxy s24',
-  'GALAXY S24',
-  'iphone 15',
-  'برنامه نویسی',
-  `برنامه${ZWNJ}نویسی`,
-  'javascript',
-  'JAVASCRIPT',
-  '25900000',
-  '۲۵۹۰۰۰۰۰',
-  'پلاک 123',
-  'پلاک ۱۲۳',
-  'هدفون sony',
-  'نایک air',
-  'ال‌جی',
-  'تهران ولیعصر',
-  'گارانتی 18',
-  'گارانتی ۱۸',
-];
-
-function filterCatalog(query: string): string[] {
-  return PRODUCT_CATALOG.filter((item) => includesPersian(item, query));
-}
-
-describe('Persian search benchmarks', () => {
   bench(
-    'normalizeForSearch — single product title',
+    'small — noisy title (cache-miss path)',
     () => {
-      normalizeForSearch(PRODUCT_CATALOG[0]!);
+      // Deterministic unique suffix so we measure normalize cost, not cache hits.
+      uniqueSuffix += 1;
+      normalizeForSearch(`${SMALL_NOISY}#${uniqueSuffix}`);
     },
-    { time: 1500 },
+    BENCH_OPTIONS,
   );
 
   bench(
-    'normalizeForSearch — repeated query (cached)',
+    'small — repeated same query (cached hot path)',
+    () => {
+      normalizeForSearch(SEARCH_QUERIES[0]);
+    },
+    BENCH_OPTIONS,
+  );
+
+  bench(
+    'medium — description',
+    () => {
+      normalizeForSearch(MEDIUM_NOISY);
+    },
+    BENCH_OPTIONS,
+  );
+
+  bench(
+    'large — ~20k chars (cache miss each run)',
+    () => {
+      uniqueSuffix += 1;
+      normalizeForSearch(`${LARGE_TEXT}\n#${uniqueSuffix}`);
+    },
+    BENCH_OPTIONS_STRESS,
+  );
+
+  bench(
+    'repeated — full query set (typical typeahead)',
     () => {
       for (const query of SEARCH_QUERIES) {
         normalizeForSearch(query);
       }
     },
-    { time: 1500 },
+    BENCH_OPTIONS,
   );
 
   bench(
-    'includesPersian — filter full catalog per query',
+    'repeated — cold cache per title',
     () => {
-      for (const query of SEARCH_QUERIES) {
-        filterCatalog(query);
+      clearSearchNormalizeCache();
+      for (const title of PRODUCT_TITLES) {
+        normalizeForSearch(title);
       }
     },
-    { time: 2000 },
+    BENCH_OPTIONS,
   );
 
   bench(
-    'includesPersian — single hot query across catalog',
+    'includesPersian — filter 25 titles × all queries',
     () => {
-      for (const item of PRODUCT_CATALOG) {
+      for (const query of SEARCH_QUERIES) {
+        for (const title of PRODUCT_TITLES) {
+          includesPersian(title, query);
+        }
+      }
+    },
+    BENCH_OPTIONS_HEAVY,
+  );
+
+  bench(
+    'includesPersian — one hot query across 1k catalog',
+    () => {
+      for (const item of CATALOG_1K) {
         includesPersian(item, 'سامسونگ');
       }
     },
-    { time: 1500 },
-  );
-
-  bench(
-    'matchesPersian — exact title match',
-    () => {
-      matchesPersian(PRODUCT_CATALOG[0]!, 'گوشی سامسونگ Galaxy S24');
-    },
-    { time: 1500 },
-  );
-
-  bench(
-    'normalizeForSearch — cold cache (Arabic Kaf title)',
-    () => {
-      clearSearchNormalizeCache();
-      normalizeForSearch('گوشی سامسونگ كلاسیک B310');
-    },
-    { time: 1500 },
+    BENCH_OPTIONS_HEAVY,
   );
 });

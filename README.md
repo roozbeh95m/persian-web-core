@@ -451,17 +451,23 @@ Pass either `collator` **or** collation options to `sortPersian`, not both.
 
 ### Performance
 
-| Operation                   | Cost                                                                     | Guidance                                                                    |
-| --------------------------- | ------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
-| `createPersianCollator()`   | One-time `Intl.Collator` construction                                    | Reuse the returned collator when sorting many arrays                        |
-| `collator.compare(a, b)`    | O(m) per call — normalizes both strings, then compares                   | Best for occasional pairwise checks                                         |
-| `sortPersian(array)`        | O(n log n) comparisons; each key normalized once (Schwartzian transform) | Default collator is cached across calls                                     |
-| Large arrays (1k–10k items) | Dominated by comparison count and string length                          | Pass `{ collator }` to avoid option resolution; run `npm run bench` locally |
+| Operation                   | Cost                                                                     | Guidance                                                                        |
+| --------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| `createPersianCollator()`   | One-time `Intl.Collator` construction                                    | Reuse the returned collator when sorting many arrays                            |
+| `collator.compare(a, b)`    | O(m) per call — normalizes both strings, then compares                   | Best for occasional pairwise checks                                             |
+| `sortPersian(array)`        | O(n log n) comparisons; each key normalized once (Schwartzian transform) | Default collator is cached across calls                                         |
+| Large arrays (1k–10k items) | Dominated by comparison count and string length                          | Pass `{ collator }` to avoid option resolution; run `npm run benchmark` locally |
 
-Benchmarks live in `src/sort/persian-sort.bench.ts`. Run:
+## Benchmarks
+
+Reproducible Vitest microbenchmarks for hot paths (`toPersianDigits`,
+`toEnglishDigits`, `normalizePersian`, `normalizeForSearch`, `formatNumber`,
+`formatCurrency`, `sortPersian`). Fixtures are fixed; each case uses an
+explicit iteration budget. Absolute timings vary by machine — compare ratios
+and PR deltas on the same Node version.
 
 ```bash
-npm run bench
+npm run benchmark
 ```
 
 ## Date

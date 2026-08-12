@@ -1,4 +1,5 @@
 import { toEnglishDigits, toPersianDigits } from '../digits/index.js';
+import { getCachedNumberFormat } from '../shared/cached-number-format.js';
 
 import type { FormatNumberDigits, FormatNumberOptions } from './types.js';
 
@@ -96,6 +97,6 @@ export function formatNumber(
     intlOptions.useGrouping = options?.useGrouping ?? true;
   }
 
-  const formatted = new Intl.NumberFormat(locale, intlOptions).format(value);
+  const formatted = getCachedNumberFormat(locale, intlOptions).format(value);
   return applyDigits(formatted, options?.digits);
 }

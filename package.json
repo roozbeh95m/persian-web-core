@@ -75,6 +75,7 @@
     "test": "./node_modules/vitest/vitest.mjs run",
     "test:coverage": "./node_modules/vitest/vitest.mjs run --coverage",
     "bench": "./node_modules/vitest/vitest.mjs bench",
+    "benchmark": "./node_modules/vitest/vitest.mjs bench --run",
     "prepare": "./node_modules/husky/bin.js"
   },
   "engines": {

@@ -1,4 +1,5 @@
 import { normalizePersian } from '../normalize/normalize-persian.js';
+import { foldAsciiLatinCase } from '../shared/fold-ascii-latin-case.js';
 
 import type { NormalizePersianOptions } from '../normalize/types.js';
 
@@ -16,34 +17,6 @@ const SEARCH_NORMALIZE_OPTIONS = {
 const SEARCH_CACHE_MAX_SIZE = 512;
 
 const searchNormalizeCache = new Map<string, string>();
-
-/**
- * Folds ASCII Latin uppercase letters (`A–Z`) to lowercase.
- * Non-ASCII letters (including Persian) are left unchanged.
- */
-function foldAsciiLatinCase(input: string): string {
-  let hasUpper = false;
-  for (let i = 0; i < input.length; i++) {
-    const code = input.charCodeAt(i);
-    if (code >= 65 && code <= 90) {
-      hasUpper = true;
-      break;
-    }
-  }
-
-  if (!hasUpper) {
-    return input;
-  }
-
-  const chars = [...input];
-  for (let i = 0; i < chars.length; i++) {
-    const code = chars[i]!.charCodeAt(0);
-    if (code >= 65 && code <= 90) {
-      chars[i] = String.fromCharCode(code + 32);
-    }
-  }
-  return chars.join('');
-}
 
 /**
  * Removes every ZWNJ so compound forms match their joined spellings during search.

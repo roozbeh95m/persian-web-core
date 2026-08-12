@@ -25,10 +25,11 @@ const HAMZA_ABOVE = 0x0654;
 /** Arabic Letter Heh with Yeh Above (ۀ) — normalize to ه + ٔ */
 const HEH_WITH_YEH_ABOVE = 0x06c0;
 
-const PERSIAN_YEH_CHAR = String.fromCharCode(PERSIAN_YEH);
-const PERSIAN_KAF_CHAR = String.fromCharCode(PERSIAN_KAF);
 const HEH_CHAR = String.fromCharCode(HEH);
 const HEH_WITH_HAMZA = String.fromCharCode(HEH, HAMZA_ABOVE);
+
+/** Sentinel: drop this code unit (diacritic removal). */
+const DROP = -1;
 
 /**
  * Arabic combining marks commonly treated as removable diacritics.
@@ -52,29 +53,24 @@ function isWhitespaceChar(char: string): boolean {
 }
 
 /**
- * Maps a single code unit to its Persian-normalized replacement.
- * Returns `null` when the character should be dropped (diacritic removal).
- * May return one or two characters (e.g. ۀ → هٔ).
+ * Maps a BMP code unit to its Persian-normalized code, or {@link DROP}.
+ * Multi-character replacements (`ۀ`) are handled separately in the main loop
+ * so this stays monomorphic for V8.
  */
-function mapChar(code: number, removeDiacritics: boolean): string | null {
+function mapCode(code: number, removeDiacritics: boolean): number {
   if (removeDiacritics && isArabicDiacritic(code)) {
-    return null;
+    return DROP;
   }
 
   if (code === ARABIC_YEH || code === ALEF_MAKSURA) {
-    return PERSIAN_YEH_CHAR;
+    return PERSIAN_YEH;
   }
 
   if (code === ARABIC_KAF) {
-    return PERSIAN_KAF_CHAR;
+    return PERSIAN_KAF;
   }
 
-  if (code === HEH_WITH_YEH_ABOVE) {
-    // Canonical Persian ezafe form; becomes bare ه when diacritics are removed.
-    return removeDiacritics ? HEH_CHAR : HEH_WITH_HAMZA;
-  }
-
-  return String.fromCharCode(code);
+  return code;
 }
 
 /**
@@ -82,18 +78,18 @@ function mapChar(code: number, removeDiacritics: boolean): string | null {
  * - collapse consecutive ZWNJs to one
  * - drop ZWNJ at string edges and adjacent to whitespace
  *
- * Idempotent.
+ * Idempotent. Uses code-unit indexing (Persian text is BMP).
  */
 function cleanupZwnj(input: string): string {
   if (input.length === 0 || !input.includes(ZWNJ)) {
     return input;
   }
 
-  const chars = [...input];
+  const length = input.length;
   const out: string[] = [];
 
-  for (let i = 0; i < chars.length; i++) {
-    const char = chars[i]!;
+  for (let i = 0; i < length; i++) {
+    const char = input[i]!;
 
     if (char !== ZWNJ) {
       out.push(char);
@@ -109,10 +105,10 @@ function cleanupZwnj(input: string): string {
 
     // Find next non-ZWNJ character.
     let j = i + 1;
-    while (j < chars.length && chars[j] === ZWNJ) {
+    while (j < length && input[j] === ZWNJ) {
       j++;
     }
-    const next = j < chars.length ? chars[j]! : null;
+    const next = j < length ? input[j]! : null;
 
     const keep =
       prev !== null &&
@@ -142,6 +138,14 @@ function normalizeWhitespaceRuns(input: string): string {
   return collapsed === input ? input : collapsed;
 }
 
+function copyPrefix(text: string, end: number): string[] {
+  const buffer = new Array<string>(end);
+  for (let j = 0; j < end; j++) {
+    buffer[j] = text[j]!;
+  }
+  return buffer;
+}
+
 /**
  * Normalizes Persian text to a stable orthographic form.
  *
@@ -150,7 +154,7 @@ function normalizeWhitespaceRuns(input: string): string {
  * - Arabic Kaf (`ك`) → Persian Kaf (`ک`)
  * - Heh with Yeh above (`ۀ`) → `هٔ` (or `ه` when {@link NormalizePersianOptions.removeDiacritics} is on)
  * - ZWNJ cleanup (collapse runs; drop at edges / next to whitespace; keep
- *   meaningful joins such as `می‌شود`)
+ *   meaningful joins such as `می‌روم`)
  *
  * Optional (defaults preserve content):
  * - {@link NormalizePersianOptions.digits}
@@ -184,25 +188,46 @@ export function normalizePersian(
   const removeDiacritics = options?.removeDiacritics ?? false;
   const shouldNormalizeWhitespace = options?.normalizeWhitespace ?? false;
 
-  let changed = false;
-  const parts: string[] = [];
+  // Lazy buffer (same pattern as mapDigits): allocate only on first change.
+  let buffer: string[] | null = null;
+  const length = text.length;
 
-  for (let i = 0; i < text.length; i++) {
+  for (let i = 0; i < length; i++) {
     const code = text.charCodeAt(i);
-    const mapped = mapChar(code, removeDiacritics);
 
-    if (mapped === null) {
-      changed = true;
+    // ۀ is the only multi-character replacement — keep it out of mapCode.
+    if (code === HEH_WITH_YEH_ABOVE) {
+      const replacement = removeDiacritics ? HEH_CHAR : HEH_WITH_HAMZA;
+      if (buffer === null) {
+        buffer = copyPrefix(text, i);
+      }
+      buffer.push(replacement);
       continue;
     }
 
-    if (mapped.length !== 1 || mapped.charCodeAt(0) !== code) {
-      changed = true;
+    const mapped = mapCode(code, removeDiacritics);
+
+    if (mapped === DROP) {
+      if (buffer === null) {
+        buffer = copyPrefix(text, i);
+      }
+      continue;
     }
-    parts.push(mapped);
+
+    if (mapped !== code) {
+      if (buffer === null) {
+        buffer = copyPrefix(text, i);
+      }
+      buffer.push(String.fromCharCode(mapped));
+      continue;
+    }
+
+    if (buffer !== null) {
+      buffer.push(text[i]!);
+    }
   }
 
-  let result = changed ? parts.join('') : text;
+  let result = buffer === null ? text : buffer.join('');
 
   result = cleanupZwnj(result);
 
