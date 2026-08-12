@@ -9,12 +9,17 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./digits": {
+      "types": "./dist/digits/index.d.ts",
+      "import": "./dist/digits/index.js"
     }
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
     "build": "./node_modules/typescript/bin/tsc -p tsconfig.build.json",
