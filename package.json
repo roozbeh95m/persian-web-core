@@ -1,8 +1,36 @@
 {
   "name": "@persian-web/core",
   "version": "0.1.2",
-  "description": "Core Persian web utilities",
+  "description": "Modern JavaScript and TypeScript utilities for Persian and Farsi web development — Jalali calendar dates, Persian digits and number formatting, RTL helpers, typography, Iranian phone numbers, and national ID validation.",
+  "keywords": [
+    "persian",
+    "farsi",
+    "persian-web",
+    "persian-javascript",
+    "persian-typescript",
+    "jalali",
+    "jalali-calendar",
+    "persian-date",
+    "persian-calendar",
+    "persian-numbers",
+    "persian-digits",
+    "persian-typography",
+    "rtl",
+    "rtl-javascript",
+    "localization",
+    "i18n",
+    "iran",
+    "iranian",
+    "javascript",
+    "typescript",
+    "utilities",
+    "esm"
+  ],
   "license": "MIT",
+  "author": {
+    "name": "Persian Web",
+    "url": "https://github.com/roozbeh95m"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/roozbeh95m/persian-web-core.git"
@@ -10,7 +38,7 @@
   "bugs": {
     "url": "https://github.com/roozbeh95m/persian-web-core/issues"
   },
-  "homepage": "https://github.com/roozbeh95m/persian-web-core",
+  "homepage": "https://github.com/roozbeh95m/persian-web-core#readme",
   "type": "module",
   "sideEffects": false,
   "exports": {

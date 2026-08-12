@@ -1,25 +1,42 @@
 # @persian-web/core
 
+[![npm version](https://img.shields.io/npm/v/@persian-web/core.svg)](https://www.npmjs.com/package/@persian-web/core)
+[![npm downloads](https://img.shields.io/npm/dm/@persian-web/core.svg)](https://www.npmjs.com/package/@persian-web/core)
 [![CI](https://github.com/roozbeh95m/persian-web-core/actions/workflows/ci.yml/badge.svg)](https://github.com/roozbeh95m/persian-web-core/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/roozbeh95m/persian-web-core.svg)](https://github.com/roozbeh95m/persian-web-core)
 
-Dependency-free TypeScript utilities for Persian (Farsi) text, numbers, dates, and Iranian web forms.
+**Modern JavaScript & TypeScript utilities for Persian, Farsi and RTL web applications.**
 
-The library covers digit conversion, orthographic normalization, display typography, locale-aware formatting, Iranian phone and national ID helpers, search keys, URL slugs, sorting, Jalali dates, and text direction detection. Every public function is typed, tree-shakeable, and covered by unit and property tests.
+`@persian-web/core` is a modern JavaScript/TypeScript utility library for Persian and Farsi web applications. It gives Persian web development and Farsi web development teams a dependency-free toolkit for Jalali calendar dates, Persian numbers and digit conversion, RTL utilities, Persian typography, localization helpers, and Iranian form validation — without pulling in a full i18n framework.
 
-## Why Persian Web needs this library
+Use it anywhere you need Persian JavaScript / Persian TypeScript helpers: frontend apps, Node services, and Iranian web development workflows that mix Latin and Persian text.
 
-Persian web apps repeatedly hit the same low-level problems that generic i18n stacks do not solve well:
+## Why this library exists
 
-| Problem              | What goes wrong without shared utilities                                                         |
-| -------------------- | ------------------------------------------------------------------------------------------------ |
-| Mixed digit scripts  | English `0–9`, Persian `۰–۹`, and Arabic-Indic `٠–٩` appear in the same forms and search queries |
-| Yeh / Kaf variants   | Arabic `ي` / `ك` vs Persian `ی` / `ک` break equality, search, and sort                           |
-| ZWNJ                 | `می‌روم` vs `میروم` must match for search but remain distinct for display                        |
-| Iranian domain rules | Mobile numbers, کد ملی checksums, rial/toman display, and Jalali civil dates                     |
-| RTL / mixed UI       | Direction must be inferred from strong characters, not assumed from locale alone                 |
+Persian and Farsi web apps repeatedly hit the same low-level problems that generic i18n stacks do not solve well:
+
+| Problem              | What goes wrong without shared utilities                                                                   |
+| -------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Mixed digit scripts  | English `0–9`, Persian `۰–۹`, and Arabic-Indic `٠–٩` appear in the same forms and search queries           |
+| Yeh / Kaf variants   | Arabic `ي` / `ك` vs Persian `ی` / `ک` break equality, search, and sort                                     |
+| ZWNJ                 | `می‌روم` vs `میروم` must match for search but remain distinct for display                                  |
+| Iranian domain rules | Mobile numbers, کد ملی checksums, rial/toman display, and Jalali (Persian calendar) civil dates            |
+| RTL / mixed UI       | Right-to-left JavaScript UI needs direction inferred from strong characters, not assumed from locale alone |
 
 `@persian-web/core` is the shared foundation for those concerns: small, deterministic helpers with no runtime dependencies, so product packages can import only what they need.
+
+## Features
+
+- **Persian digit conversion** between English, Persian, and Arabic-Indic scripts
+- **Persian number formatting** via `Intl`, with optional Persian digits and `fa-IR` grouping
+- **Jalali date** conversion and formatting (Persian calendar / Solar Hijri)
+- **RTL utilities** — detect `rtl` / `ltr` / `mixed` / `neutral` for UI `dir` heuristics
+- **Persian typography** — conservative display fixes (quotes, verbal-prefix ZWNJ, punctuation spacing)
+- **Persian localization helpers** — orthographic normalization, search folding, collation, and Persian-preserving URL slugs
+- **Iranian web forms** — mobile parse/validate/format and کد ملی validation
+- **Currency display** — toman and rial formatting helpers
+- Tree-shakeable ESM modules with full TypeScript declarations
 
 ## Installation
 
@@ -39,26 +56,35 @@ yarn add @persian-web/core
 
 The package is **ESM-only** (`"type": "module"`). There is no CommonJS build.
 
+**npm:** [https://www.npmjs.com/package/@persian-web/core](https://www.npmjs.com/package/@persian-web/core)  
+**GitHub:** [https://github.com/roozbeh95m/persian-web-core](https://github.com/roozbeh95m/persian-web-core)
+
 ## Quick start
 
 ```ts
 import {
   toPersianDigits,
   normalizePersian,
+  formatNumber,
   formatToman,
   normalizePhone,
   includesPersian,
   toJalali,
+  formatJalali,
   isRTL,
+  fixPersianTypography,
 } from '@persian-web/core';
 
 toPersianDigits('قیمت: 2500'); // 'قیمت: ۲۵۰۰'
 normalizePersian('كي'); // 'کی'
+formatNumber(1_250_000, { locale: 'fa-IR' }); // '۱٬۲۵۰٬۰۰۰'
 formatToman(1_250_000); // '‎تومان ۱٬۲۵۰٬۰۰۰'
 normalizePhone('۰۹۱۲۱۲۳۴۵۶۷'); // '+989121234567'
 includesPersian('گوشی سامسونگ كلاسیک', 'کلاس'); // true
 toJalali(2024, 3, 20); // { year: 1403, month: 1, day: 1 }
+formatJalali({ year: 1403, month: 1, day: 1 }, { digits: 'persian' }); // '۱۴۰۳/۰۱/۰۱'
 isRTL('سلام دنیا'); // true
+fixPersianTypography('می رود'); // 'می‌رود'
 ```
 
 Prefer subpath imports when you only need one module:
@@ -66,6 +92,26 @@ Prefer subpath imports when you only need one module:
 ```ts
 import { toPersianDigits } from '@persian-web/core/digits';
 import { normalizePersian } from '@persian-web/core/normalize';
+import { toJalali } from '@persian-web/core/date';
+import { isRTL } from '@persian-web/core/direction';
+```
+
+## Examples
+
+Runnable examples live in [`examples/`](./examples/) and use the real public API:
+
+| Example                                                       | Demonstrates                                   |
+| ------------------------------------------------------------- | ---------------------------------------------- |
+| [`quick-start.mjs`](./examples/quick-start.mjs)               | Digits, Jalali date, numbers, RTL, typography  |
+| [`jalali-date.mjs`](./examples/jalali-date.mjs)               | Jalali ↔ Gregorian conversion and formatting   |
+| [`persian-numbers.mjs`](./examples/persian-numbers.mjs)       | Persian number formatting and digit conversion |
+| [`rtl-and-typography.mjs`](./examples/rtl-and-typography.mjs) | RTL utilities and Persian typography           |
+| [`iranian-forms.mjs`](./examples/iranian-forms.mjs)           | Iranian phone and national ID helpers          |
+
+```bash
+npm run examples
+# or after build:
+node examples/jalali-date.mjs
 ```
 
 ## API overview
@@ -89,26 +135,11 @@ Root import `@persian-web/core` re-exports the full public API and associated ty
 
 Each docs page documents **description**, **usage**, **output**, **options**, **edge cases**, and **examples** for every public function in that module.
 
-## Feature list
-
-- **Digit conversion** between English, Persian, and Arabic-Indic scripts
-- **Conservative normalization** (Yeh/Kaf/ZWNJ always; digits, diacritics, whitespace opt-in)
-- **Display typography** fixes (quotes, verbal-prefix ZWNJ, punctuation spacing) — not spell-checking
-- **`Intl`-backed** number and currency formatting with optional digit overrides
-- **Iranian mobile** parse / validate / format (national + E.164)
-- **کد ملی** validation with structured rejection reasons
-- **Search normalization** that folds Yeh/Kaf, digits, diacritics, ZWNJ, and ASCII case
-- **Persian-preserving URL slugs** (no Latin transliteration)
-- **Persian collation** via `Intl.Collator` with normalized sort keys
-- **Jalali ↔ Gregorian** conversion and token formatting (Borkowski algorithm)
-- **Relative time** in Persian via `Intl.RelativeTimeFormat`
-- **Text direction** detection (`rtl` / `ltr` / `mixed` / `neutral`)
-
-## TypeScript support
+## TypeScript usage
 
 - Written in TypeScript with strict compiler settings (`strict`, `exactOptionalPropertyTypes`, `noUncheckedIndexedAccess`)
 - Published `.d.ts` declarations for every export and subpath
-- Option objects and result unions are exported as named types (for example `NormalizePersianOptions`, `ValidateNationalIdResult`)
+- Option objects and result unions are exported as named types (for example `NormalizePersianOptions`, `ValidateNationalIdResult`, `JalaliDate`)
 - No `@types/*` runtime dependency — consumers get types from the package itself
 
 ```ts
@@ -116,10 +147,14 @@ import type {
   FormatNumberOptions,
   ValidateNationalIdResult,
   JalaliDate,
+  TextDirection,
 } from '@persian-web/core';
+
+const date: JalaliDate = { year: 1403, month: 1, day: 1 };
+const direction: TextDirection = 'rtl';
 ```
 
-## Browser and Node support
+## Browser and Node compatibility
 
 | Environment                                  | Support                                                                                                 |
 | -------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
@@ -145,53 +180,21 @@ Notes:
 import { toPersianDigits } from '@persian-web/core/digits';
 ```
 
-## Performance philosophy
+## Testing and quality
 
-The library optimizes for **predictable cost** and **allocation avoidance**, not absolute marketing numbers:
-
-- Allocate a new string only when a conversion changes the input; otherwise return the same reference
-- Cache hot `Intl.NumberFormat` instances (LRU, size 64)
-- Memoize `normalizeForSearch` results (LRU, size 512)
-- Cache the default Persian collator used by `sortPersian`
-- Use a Schwartzian transform in `sortPersian` so each key is normalized once
-
-Reproducible Vitest microbenchmarks live next to the source (`*.bench.ts`). Absolute timings vary by machine — compare ratios and PR deltas on the same Node version:
-
-```bash
-npm run benchmark
-```
-
-## Testing philosophy
-
-Tests favor **invariants** over brittle snapshots:
-
-| Kind                          | What they protect                                                               |
-| ----------------------------- | ------------------------------------------------------------------------------- |
-| Unit tests                    | Exact outputs, rejection reasons, and documented edge cases                     |
-| Property tests (`fast-check`) | Idempotence, round-trips, and “never throw on arbitrary strings” where promised |
-| Integration tests             | Cross-module contracts (digits ↔ phone, normalize ↔ search, …)                  |
-| Export tests                  | Public `exports` map and tree-shake isolation of subpaths                       |
-| Benchmarks                    | Relative cost of hot paths with fixed fixtures                                  |
-
-Pre-commit hooks run typecheck, lint, and format checks. Commits follow [Conventional Commits](https://www.conventionalcommits.org/).
+Tests favor **invariants** over brittle snapshots: unit tests, property tests (`fast-check`), cross-module integration tests, export/tree-shake checks, and Vitest microbenchmarks.
 
 ```bash
 npm test
 npm run test:coverage
+npm run benchmark
 ```
 
-## Contribution guide
+Pre-commit hooks run typecheck, lint, and format checks. Commits follow [Conventional Commits](https://www.conventionalcommits.org/).
 
-1. Open an issue for behavior changes or new APIs before large PRs.
-2. Keep helpers **deterministic**, **pure**, and free of runtime dependencies unless discussed.
-3. Prefer opt-in behavior for anything that rewrites user-visible text beyond Yeh/Kaf/ZWNJ.
-4. Add unit tests for new cases; add property tests when the function claims an invariant (idempotence, round-trip).
-5. Update the matching file under [`docs/`](./docs/) and the API overview table in this README.
-6. Use Conventional Commit messages (`feat:`, `fix:`, `docs:`, `test:`, `chore:`, …).
+## Contributing
 
-Do **not** expand scope into stemming, spell-checking, OCR, or full NLP without an explicit design discussion — those are out of scope for this package.
-
-## Development setup
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for development setup, coding standards, and PR expectations.
 
 ```bash
 git clone https://github.com/roozbeh95m/persian-web-core.git
@@ -211,11 +214,10 @@ npm run build
 | `npm test`                        | Vitest unit / property / integration suite  |
 | `npm run test:coverage`           | Coverage report under `coverage/`           |
 | `npm run size`                    | Fail if `dist/` import graphs exceed budget |
+| `npm run examples`                | Build and run the quick-start example       |
 | `npm run benchmark`               | Vitest benches (`--run`)                    |
 
-Pull requests run install, typecheck, lint, tests, build, coverage, and bundle size checks on GitHub Actions (Node 20 and 22). Publishing is a separate manual workflow and stays dry-run until intentionally enabled.
-
-Husky runs typecheck, lint, and format checks on commit, and commitlint on the commit message.
+Pull requests run install, typecheck, lint, tests, build, coverage, and bundle size checks on GitHub Actions (Node 20 and 22).
 
 ## License
 
@@ -225,12 +227,12 @@ See [CHANGELOG.md](./CHANGELOG.md) for release notes.
 
 ## Roadmap
 
-Current version is **`0.1.0`** (first public MVP; still pre-1.0). Planned work, in priority order:
+Current version is **`0.1.2`** (pre-1.0). Planned work, in priority order:
 
 1. **API freeze toward `1.0.0`** — stabilize option names, result unions, and subpath exports; document breaking changes in [CHANGELOG.md](./CHANGELOG.md) before the major bump.
-2. **Release automation** — enable live npm publish (trusted publishing / `NPM_TOKEN`) once the first publish is verified; keep CI green on every release tag.
-3. **Phone coverage maintenance** — keep Iranian mobile prefix ranges aligned with allocations; evaluate optional landline helpers as a separate, explicitly scoped API if needed.
+2. **Release automation** — keep trusted publishing / CI green on every release tag.
+3. **Phone coverage maintenance** — keep Iranian mobile prefix ranges aligned with allocations.
 4. **Intl compatibility notes** — document known output differences across Node and major browsers for currency/number/relative-time assertions.
 5. **Docs site (optional)** — if the Markdown tree outgrows GitHub browsing, generate a static docs site from `docs/` without changing the library API.
 
-Items deliberately **not** on the roadmap: automatic IRR↔IRT conversion, Latin transliteration of Persian slugs, and open-ended grammar correction.
+Items deliberately **not** on the roadmap: automatic IRR↔IRT conversion, Latin transliteration of Persian slugs, open-ended grammar correction, and keyboard layout simulation.

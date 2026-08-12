@@ -10,6 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Publish from GitHub Actions via npm Trusted Publishing (OIDC), without a long-lived `NPM_TOKEN`.
+- Improved npm package discoverability: richer `description`, relevant `keywords`, `author`, and `module` fields.
+- Rewrote README with a clearer Persian/Farsi web development positioning, npm/GitHub badges, and links to runnable examples.
+- Added [`CONTRIBUTING.md`](./CONTRIBUTING.md) and an [`examples/`](./examples/) directory demonstrating the real public API.
+
+### Notes
+
+- No public API or runtime behavior changes.
 
 [0.1.2]: https://github.com/roozbeh95m/persian-web-core/releases/tag/v0.1.2
 
