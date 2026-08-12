@@ -63,7 +63,9 @@
   "types": "./dist/index.d.ts",
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "LICENSE",
+    "docs"
   ],
   "scripts": {
     "build": "./node_modules/typescript/bin/tsc -p tsconfig.build.json",
