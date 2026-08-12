@@ -14,6 +14,12 @@ export default defineConfig({
       ],
       reporter: ['text', 'text-summary', 'json-summary'],
       reportsDirectory: './coverage',
+      thresholds: {
+        statements: 95,
+        branches: 95,
+        functions: 95,
+        lines: 95,
+      },
     },
     /**
      * Benchmark suite (`npm run benchmark`).

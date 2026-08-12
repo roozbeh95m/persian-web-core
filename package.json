@@ -3,6 +3,14 @@
   "version": "0.0.0",
   "description": "Core Persian web utilities",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roozbeh95m/persian-web-core.git"
+  },
+  "bugs": {
+    "url": "https://github.com/roozbeh95m/persian-web-core/issues"
+  },
+  "homepage": "https://github.com/roozbeh95m/persian-web-core#readme",
   "type": "module",
   "sideEffects": false,
   "exports": {
@@ -76,9 +84,13 @@
     "format:check": "./node_modules/prettier/bin/prettier.cjs --check .",
     "test": "./node_modules/vitest/vitest.mjs run",
     "test:coverage": "./node_modules/vitest/vitest.mjs run --coverage",
+    "size": "node ./scripts/check-bundle-size.mjs",
     "bench": "./node_modules/vitest/vitest.mjs bench",
     "benchmark": "./node_modules/vitest/vitest.mjs bench --run",
     "prepare": "./node_modules/husky/bin.js"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "engines": {
     "node": ">=20"

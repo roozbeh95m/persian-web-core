@@ -1,0 +1,57 @@
+name: Publish
+
+# Manual only — do not publish on push/tag until release process is ready.
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Keep true until npm publishing is intentionally enabled
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: npm publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - name: Install
+        run: npm ci
+        env:
+          HUSKY: '0'
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Bundle size
+        run: npm run size
+
+      - name: Publish (dry-run)
+        if: ${{ inputs.dry_run }}
+        run: npm publish --dry-run --access public
+
+      - name: Publish blocked
+        if: ${{ !inputs.dry_run }}
+        run: |
+          echo "Live npm publish is not enabled yet."
+          echo "Keep dry_run=true, or wire NPM_TOKEN / trusted publishing when ready."
+          exit 1

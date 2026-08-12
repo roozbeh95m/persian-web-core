@@ -1,5 +1,8 @@
 # @persian-web/core
 
+[![CI](https://github.com/roozbeh95m/persian-web-core/actions/workflows/ci.yml/badge.svg)](https://github.com/roozbeh95m/persian-web-core/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
 Dependency-free TypeScript utilities for Persian (Farsi) text, numbers, dates, and Iranian web forms.
 
 The library covers digit conversion, orthographic normalization, display typography, locale-aware formatting, Iranian phone and national ID helpers, search keys, URL slugs, sorting, Jalali dates, and text direction detection. Every public function is typed, tree-shakeable, and covered by unit and property tests.
@@ -191,23 +194,26 @@ Do **not** expand scope into stemming, spell-checking, OCR, or full NLP without 
 ## Development setup
 
 ```bash
-git clone <repository-url>
-cd persian-web-core   # or your local checkout path
+git clone https://github.com/roozbeh95m/persian-web-core.git
+cd persian-web-core
 npm install
 npm run typecheck
 npm test
 npm run build
 ```
 
-| Script                            | Purpose                                    |
-| --------------------------------- | ------------------------------------------ |
-| `npm run build`                   | Emit `dist/` (JS + `.d.ts` + source maps)  |
-| `npm run typecheck`               | `tsc --noEmit`                             |
-| `npm run lint` / `lint:fix`       | ESLint                                     |
-| `npm run format` / `format:check` | Prettier                                   |
-| `npm test`                        | Vitest unit / property / integration suite |
-| `npm run test:coverage`           | Coverage report under `coverage/`          |
-| `npm run benchmark`               | Vitest benches (`--run`)                   |
+| Script                            | Purpose                                     |
+| --------------------------------- | ------------------------------------------- |
+| `npm run build`                   | Emit `dist/` (JS + `.d.ts` + source maps)   |
+| `npm run typecheck`               | `tsc --noEmit`                              |
+| `npm run lint` / `lint:fix`       | ESLint                                      |
+| `npm run format` / `format:check` | Prettier                                    |
+| `npm test`                        | Vitest unit / property / integration suite  |
+| `npm run test:coverage`           | Coverage report under `coverage/`           |
+| `npm run size`                    | Fail if `dist/` import graphs exceed budget |
+| `npm run benchmark`               | Vitest benches (`--run`)                    |
+
+Pull requests run install, typecheck, lint, tests, build, coverage, and bundle size checks on GitHub Actions (Node 20 and 22). Publishing is a separate manual workflow and stays dry-run until intentionally enabled.
 
 Husky runs typecheck, lint, and format checks on commit, and commitlint on the commit message.
 
