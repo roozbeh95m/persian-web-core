@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 
+import { CodeBlock } from './CodeBlock';
+
 type PlaygroundLayoutProps = {
   title: string;
   titleFa: string;
@@ -26,60 +28,27 @@ export function PlaygroundLayout({
       <header className="page-hero">
         <h1>
           {titleFa}
-          <span
-            style={{
-              display: 'block',
-              marginTop: '0.35rem',
-              fontSize: '1rem',
-              fontWeight: 500,
-              color: 'var(--ink-faint)',
-            }}
-          >
-            {title}
-          </span>
+          <span className="page-hero__en">{title}</span>
         </h1>
         <p>{description}</p>
-        <p className="note">
-          Import: <code>{importPath}</code>
+        <p className="import-chip" dir="ltr">
+          {importPath}
         </p>
       </header>
 
       <div className="playground__grid">
         <section className="panel">
-          <h2>ورودی و گزینه‌ها</h2>
+          <h2>Input</h2>
           {controls}
         </section>
         <section className="panel">
-          <h2>خروجی زنده</h2>
+          <h2>Live output</h2>
           {output}
         </section>
       </div>
 
-      <section
-        className="panel"
-        style={{ background: 'var(--bg-code)', borderColor: '#2a3833' }}
-      >
-        <div className="snippet-header">
-          <h2 style={{ color: '#c9ddd4' }}>نمونه کد</h2>
-          <CopyButton text={snippet} />
-        </div>
-        <pre className="output output--code">{snippet}</pre>
-        {note ? <p className="note">{note}</p> : null}
-      </section>
+      <CodeBlock code={snippet} label="Code example" />
+      {note ? <p className="note">{note}</p> : null}
     </article>
-  );
-}
-
-function CopyButton({ text }: { text: string }) {
-  return (
-    <button
-      type="button"
-      className="copy-button"
-      onClick={() => {
-        void navigator.clipboard.writeText(text);
-      }}
-    >
-      کپی
-    </button>
   );
 }

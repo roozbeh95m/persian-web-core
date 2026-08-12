@@ -1,19 +1,16 @@
 # @persian-web/core demo
 
-Interactive Vite + React playground for the local `@persian-web/core` package.
+Documentation site and interactive playground for the local `@persian-web/core` package.
 
 ## Setup
 
 ```bash
-npm --prefix demo install --ignore-scripts
-node demo/scripts/ensure-esbuild.mjs
+npm --prefix demo install
 ```
-
-> Note: this repository directory name contains a colon (`persian-web:core`), which breaks Unix `PATH` lookups for `node_modules/.bin`. Demo scripts invoke Vite/TypeScript by explicit file path. Prefer `npm install --ignore-scripts` in `demo/`, then run the small `ensure-esbuild` check (or rely on the `postinstall` script).
 
 ## Scripts
 
-From the repo root:
+From the repository root:
 
 ```bash
 npm run demo          # or: npm run demo:dev
@@ -31,4 +28,6 @@ npm run preview
 npm run typecheck
 ```
 
-The Vite config aliases `@persian-web/core` (and all public subpaths) to `../src`, so the demo consumes the local library source during development and when building the static site.
+> Note: this repository folder name contains `:`. Prefer `npm run demo` from the root, or `node ./node_modules/vite/bin/vite.js` inside `demo/`, so PATH splitting does not break the Vite binary.
+
+The Vite config aliases `@persian-web/core` (and subpaths) to `../src`, so every playground example calls the real library source.

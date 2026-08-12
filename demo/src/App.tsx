@@ -98,8 +98,11 @@ export default function App() {
       <article className="page-hero">
         <h1>صفحه پیدا نشد</h1>
         <p>
-          مسیر <code>{path}</code> تعریف نشده است.{' '}
+          مسیر <code className="mono">{path}</code> تعریف نشده است.
+        </p>
+        <div className="btn-row">
           <a
+            className="btn btn--secondary"
             href={`#${HOME_PATH}`}
             onClick={(event) => {
               event.preventDefault();
@@ -108,7 +111,7 @@ export default function App() {
           >
             بازگشت به خانه
           </a>
-        </p>
+        </div>
       </article>
     );
   }

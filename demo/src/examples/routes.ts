@@ -3,6 +3,7 @@ export type DemoRoute = {
   title: string;
   titleFa: string;
   description: string;
+  descriptionEn: string;
   importPath: string;
 };
 
@@ -14,6 +15,7 @@ export const DEMO_ROUTES: readonly DemoRoute[] = [
     title: 'Digits',
     titleFa: 'ارقام',
     description: 'تبدیل ارقام انگلیسی، فارسی و عربی.',
+    descriptionEn: 'Convert between English, Persian, and Arabic-Indic digits.',
     importPath: '@persian-web/core/digits',
   },
   {
@@ -21,6 +23,7 @@ export const DEMO_ROUTES: readonly DemoRoute[] = [
     title: 'Normalize',
     titleFa: 'نرمال‌سازی',
     description: 'یکسان‌سازی ی/ک، فاصله مجازی و ارقام.',
+    descriptionEn: 'Normalize Yeh/Kaf, ZWNJ, and optional digit scripts.',
     importPath: '@persian-web/core/normalize',
   },
   {
@@ -28,6 +31,7 @@ export const DEMO_ROUTES: readonly DemoRoute[] = [
     title: 'Numbers',
     titleFa: 'اعداد',
     description: 'قالب‌بندی اعداد با Intl و ارقام فارسی.',
+    descriptionEn: 'Locale-aware number formatting with Persian digits.',
     importPath: '@persian-web/core/format',
   },
   {
@@ -35,6 +39,7 @@ export const DEMO_ROUTES: readonly DemoRoute[] = [
     title: 'Currency',
     titleFa: 'واحد پول',
     description: 'نمایش تومان، ریال و ارزهای رایج.',
+    descriptionEn: 'Format toman, rial, and common currencies.',
     importPath: '@persian-web/core/currency',
   },
   {
@@ -42,6 +47,7 @@ export const DEMO_ROUTES: readonly DemoRoute[] = [
     title: 'Jalali date',
     titleFa: 'تاریخ جلالی',
     description: 'تبدیل و قالب‌بندی تقویم شمسی.',
+    descriptionEn: 'Convert and format Jalali calendar dates.',
     importPath: '@persian-web/core/date',
   },
   {
@@ -49,6 +55,7 @@ export const DEMO_ROUTES: readonly DemoRoute[] = [
     title: 'Direction',
     titleFa: 'جهت متن',
     description: 'تشخیص rtl / ltr / mixed برای UI.',
+    descriptionEn: 'Detect rtl, ltr, mixed, or neutral text direction.',
     importPath: '@persian-web/core/direction',
   },
   {
@@ -56,6 +63,7 @@ export const DEMO_ROUTES: readonly DemoRoute[] = [
     title: 'Typography',
     titleFa: 'تایپوگرافی',
     description: 'اصلاح نمایشی نقل‌قول و نیم‌فاصله.',
+    descriptionEn: 'Display fixes for quotes, spacing, and ZWNJ.',
     importPath: '@persian-web/core/typography',
   },
   {
@@ -63,6 +71,7 @@ export const DEMO_ROUTES: readonly DemoRoute[] = [
     title: 'Search',
     titleFa: 'جستجو',
     description: 'جستجوی مقاوم به اختلاف املای فارسی.',
+    descriptionEn: 'Persian-aware search matching and normalization.',
     importPath: '@persian-web/core/search',
   },
   {
@@ -70,6 +79,7 @@ export const DEMO_ROUTES: readonly DemoRoute[] = [
     title: 'Sort',
     titleFa: 'مرتب‌سازی',
     description: 'مرتب‌سازی فارسی با Collator.',
+    descriptionEn: 'Sort strings with Persian collation rules.',
     importPath: '@persian-web/core/sort',
   },
   {
@@ -77,6 +87,7 @@ export const DEMO_ROUTES: readonly DemoRoute[] = [
     title: 'Slug',
     titleFa: 'اسلاگ',
     description: 'ساخت اسلاگ URL با حفظ حروف فارسی.',
+    descriptionEn: 'Build URL slugs that keep Persian letters.',
     importPath: '@persian-web/core/slug',
   },
   {
@@ -84,6 +95,7 @@ export const DEMO_ROUTES: readonly DemoRoute[] = [
     title: 'Phone',
     titleFa: 'تلفن',
     description: 'نرمال‌سازی و اعتبارسنجی موبایل ایران.',
+    descriptionEn: 'Validate and normalize Iranian mobile numbers.',
     importPath: '@persian-web/core/phone',
   },
   {
@@ -91,6 +103,7 @@ export const DEMO_ROUTES: readonly DemoRoute[] = [
     title: 'National ID',
     titleFa: 'کد ملی',
     description: 'اعتبارسنجی کد ملی با دلیل خطا.',
+    descriptionEn: 'Validate Iranian national IDs with clear reasons.',
     importPath: '@persian-web/core/national-id',
   },
 ] as const;

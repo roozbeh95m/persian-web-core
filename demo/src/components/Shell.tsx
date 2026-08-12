@@ -2,6 +2,9 @@ import type { ReactNode } from 'react';
 
 import { DEMO_ROUTES, HOME_PATH } from '../examples/routes';
 
+const GITHUB_URL = 'https://github.com/roozbeh95m/persian-web-core';
+const NPM_URL = 'https://www.npmjs.com/package/@persian-web/core';
+
 type ShellProps = {
   path: string;
   navOpen: boolean;
@@ -29,11 +32,11 @@ export function Shell({
           }}
         >
           <span className="brand__mark" aria-hidden="true">
-            P
+            pw
           </span>
           <span className="brand__text">
             <span className="brand__name">@persian-web/core</span>
-            <span className="brand__tag">Demo playground</span>
+            <span className="brand__tag">Docs & playground</span>
           </span>
         </a>
         <button
@@ -58,15 +61,16 @@ export function Shell({
             }}
           >
             <span className="brand__mark" aria-hidden="true">
-              P
+              pw
             </span>
             <span className="brand__text">
               <span className="brand__name">@persian-web/core</span>
-              <span className="brand__tag">Interactive demo</span>
+              <span className="brand__tag">Docs & playground</span>
             </span>
           </a>
         </div>
-        <p className="nav-section-label">شروع</p>
+
+        <p className="nav-section-label">Overview</p>
         <ul className="nav-list">
           <li>
             <a
@@ -78,9 +82,11 @@ export function Shell({
               }}
             >
               خانه
+              <span className="nav-link__en">Home</span>
             </a>
           </li>
         </ul>
+
         <p className="nav-section-label">Playgrounds</p>
         <ul className="nav-list">
           {DEMO_ROUTES.map((route) => {
@@ -97,42 +103,34 @@ export function Shell({
                   }}
                 >
                   {route.titleFa}
-                  <span
-                    style={{
-                      display: 'block',
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      opacity: 0.75,
-                    }}
-                  >
-                    {route.title}
-                  </span>
+                  <span className="nav-link__en">{route.title}</span>
                 </a>
               </li>
             );
           })}
         </ul>
+
+        <div className="sidebar__links">
+          <a href={GITHUB_URL} target="_blank" rel="noreferrer">
+            GitHub
+          </a>
+          <a href={NPM_URL} target="_blank" rel="noreferrer">
+            npm
+          </a>
+        </div>
       </aside>
 
       <main className="app-main">
         <div className="app-main__inner">
           {children}
           <footer className="footer">
-            <span>منبع: کتابخانه محلی `src/` از طریق Vite alias</span>
+            <span>MIT · TypeScript · ESM · tree-shakeable</span>
             <span>
-              <a
-                href="https://github.com/roozbeh95m/persian-web-core"
-                target="_blank"
-                rel="noreferrer"
-              >
+              <a href={GITHUB_URL} target="_blank" rel="noreferrer">
                 GitHub
               </a>
               {' · '}
-              <a
-                href="https://www.npmjs.com/package/@persian-web/core"
-                target="_blank"
-                rel="noreferrer"
-              >
+              <a href={NPM_URL} target="_blank" rel="noreferrer">
                 npm
               </a>
             </span>
