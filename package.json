@@ -21,6 +21,10 @@
     "./format": {
       "types": "./dist/format/index.d.ts",
       "import": "./dist/format/index.js"
+    },
+    "./currency": {
+      "types": "./dist/currency/index.d.ts",
+      "import": "./dist/currency/index.js"
     }
   },
   "main": "./dist/index.js",

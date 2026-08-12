@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import * as core from './index.js';
+import * as currency from './currency/index.js';
 import * as digits from './digits/index.js';
 import * as format from './format/index.js';
 import * as normalize from './normalize/index.js';
@@ -34,5 +35,18 @@ describe('@persian-web/core', () => {
 
   it('re-exports the same function as @persian-web/core/format', () => {
     expect(core.formatNumber).toBe(format.formatNumber);
+  });
+
+  it('exports currency formatters from the root entry', () => {
+    expect(core.formatCurrency).toBeTypeOf('function');
+    expect(core.formatToman).toBeTypeOf('function');
+    expect(core.formatRial).toBeTypeOf('function');
+    expect(core.formatToman(1_250_000)).toBe('\u200eتومان\u00a0۱٬۲۵۰٬۰۰۰');
+  });
+
+  it('re-exports the same functions as @persian-web/core/currency', () => {
+    expect(core.formatCurrency).toBe(currency.formatCurrency);
+    expect(core.formatToman).toBe(currency.formatToman);
+    expect(core.formatRial).toBe(currency.formatRial);
   });
 });

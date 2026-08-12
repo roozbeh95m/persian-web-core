@@ -191,14 +191,102 @@ formatNumber(987, { notation: 'compact' }); // '987'
 - Uses native `Intl.NumberFormat`; no extra runtime dependencies.
 - Inputs are never mutated.
 
+## Currency
+
+Locale-aware currency formatting for Iranian rials/tomans and common foreign currencies.
+
+### `formatCurrency(value, options)`
+
+```ts
+import { formatCurrency } from '@persian-web/core';
+// or: import { formatCurrency } from '@persian-web/core/currency';
+
+formatCurrency(1_250_000, { currency: 'IRT' });
+// '‎تومان ۱٬۲۵۰٬۰۰۰'
+
+formatCurrency(12_500_000, { currency: 'IRR' });
+// '‎ریال ۱۲٬۵۰۰٬۰۰۰'
+
+formatCurrency(12.5, { currency: 'USD', locale: 'en-US' });
+// '$12.50'
+```
+
+### `formatToman(value, options?)`
+
+Shorthand for `formatCurrency(value, { ...options, currency: 'IRT' })`. The amount is in **tomans**.
+
+```ts
+formatToman(1_250_000);
+// '‎تومان ۱٬۲۵۰٬۰۰۰'
+```
+
+### `formatRial(value, options?)`
+
+Shorthand for `formatCurrency(value, { ...options, currency: 'IRR' })`. The amount is in **rials**.
+
+```ts
+formatRial(12_500_000);
+// '‎ریال ۱۲٬۵۰۰٬۰۰۰'
+```
+
+### Supported currencies
+
+| Code  | Unit   | Notes                                                                           |
+| ----- | ------ | ------------------------------------------------------------------------------- |
+| `IRR` | Rial   | Official Iranian currency; formatted with native `Intl`.                        |
+| `IRT` | Toman  | Common display unit (not ISO 4217); formatted manually to mirror `Intl` layout. |
+| `USD` | Dollar | Two decimal places by default.                                                  |
+| `EUR` | Euro   | Two decimal places by default.                                                  |
+
+**No automatic conversion** between `IRR` and `IRT`. The numeric value is always in the selected unit:
+
+| Input        | Code  | Meaning                                                        |
+| ------------ | ----- | -------------------------------------------------------------- |
+| `1_250_000`  | `IRT` | 1,250,000 tomans                                               |
+| `12_500_000` | `IRR` | 12,500,000 rials (equivalent display magnitude, not converted) |
+
+### Defaults
+
+| Option            | Default                                      |
+| ----------------- | -------------------------------------------- |
+| `locale`          | `'fa-IR'`                                    |
+| `currencyDisplay` | `'symbol'`                                   |
+| fraction digits   | `0` for `IRR` / `IRT`, `2` for `USD` / `EUR` |
+| `digits`          | locale script (no conversion)                |
+
+### Options
+
+| Option                  | Type                                             | Description                              |
+| ----------------------- | ------------------------------------------------ | ---------------------------------------- |
+| `currency`              | `'IRR' \| 'IRT' \| 'USD' \| 'EUR'`               | Required for `formatCurrency`.           |
+| `locale`                | `string`                                         | BCP 47 locale tag.                       |
+| `digits`                | `'persian' \| 'english'`                         | Override digit script after formatting.  |
+| `precision`             | `number`                                         | Fixed decimal places; overrides min/max. |
+| `minimumFractionDigits` | `number`                                         | Minimum digits after decimal separator.  |
+| `maximumFractionDigits` | `number`                                         | Maximum digits after decimal separator.  |
+| `currencyDisplay`       | `'symbol' \| 'narrowSymbol' \| 'code' \| 'name'` | Currency label style.                    |
+
+For `IRT`, `'symbol'` shows `تومان` (`fa-IR`) or `IRT` (`en-US`). `'name'` puts the label after the amount (`۱٬۲۵۰٬۰۰۰ تومان`).
+
+### Non-finite values
+
+`NaN` and `±Infinity` use locale-aware labels for `IRR` / `USD` / `EUR` via `Intl` (including currency symbols where the runtime supplies them, for example `$∞` or `‎ریالناعدد`). Fraction-digit options are ignored. For `IRT`, the locale-aware label is wrapped with the same prefix/suffix layout as finite amounts (for example `‎تومان ناعدد`).
+
+### Notes
+
+- Accepts `number` only. Inputs are never mutated.
+- Uses native `Intl.NumberFormat` for `IRR`, `USD`, and `EUR`; `IRT` is formatted manually.
+- Negative values use locale-appropriate minus signs (`-` in `en-US`, `‎−` in `fa-IR`).
+
 ## Entry points
 
 | Import                        | Exports                                                                             |
 | ----------------------------- | ----------------------------------------------------------------------------------- |
-| `@persian-web/core`           | Full public API (digits + normalize + format)                                       |
+| `@persian-web/core`           | Full public API (digits + normalize + format + currency)                            |
 | `@persian-web/core/digits`    | `toPersianDigits`, `toEnglishDigits`                                                |
 | `@persian-web/core/normalize` | `normalizePersian`, `NormalizePersianOptions`, `DigitNormalization`                 |
 | `@persian-web/core/format`    | `formatNumber`, `FormatNumberOptions`, `FormatNumberDigits`, `FormatNumberNotation` |
+| `@persian-web/core/currency`  | `formatCurrency`, `formatToman`, `formatRial`, currency types                       |
 
 ## License
 

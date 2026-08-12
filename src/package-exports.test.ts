@@ -24,9 +24,17 @@ describe('package exports and build layout', () => {
     });
   });
 
+  it('exposes the currency subpath export', () => {
+    expect(packageJson.exports['./currency']).toEqual({
+      types: './dist/currency/index.d.ts',
+      import: './dist/currency/index.js',
+    });
+  });
+
   it('includes format in the root export graph only via explicit re-exports', () => {
     const rootSource = readFileSync(join(packageRoot, 'src/index.ts'), 'utf8');
     expect(rootSource).toContain("from './format/index.js'");
+    expect(rootSource).toContain("from './currency/index.js'");
   });
 
   it('emits standalone format build artifacts', () => {
@@ -34,5 +42,12 @@ describe('package exports and build layout', () => {
     const formatSource = readFileSync(formatEntry, 'utf8');
     expect(formatSource).toContain('formatNumber');
     expect(formatSource).not.toContain('normalizePersian');
+  });
+
+  it('emits standalone currency build artifacts', () => {
+    const currencyEntry = join(packageRoot, 'dist/currency/index.js');
+    const currencySource = readFileSync(currencyEntry, 'utf8');
+    expect(currencySource).toContain('formatCurrency');
+    expect(currencySource).not.toContain('normalizePersian');
   });
 });
