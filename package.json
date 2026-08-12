@@ -1,0 +1,44 @@
+{
+  "name": "@persian-web/core",
+  "version": "0.0.0",
+  "description": "Core Persian web utilities",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "./node_modules/typescript/bin/tsc -p tsconfig.build.json",
+    "typecheck": "./node_modules/typescript/bin/tsc --noEmit -p tsconfig.json",
+    "lint": "./node_modules/eslint/bin/eslint.js .",
+    "lint:fix": "./node_modules/eslint/bin/eslint.js . --fix",
+    "format": "./node_modules/prettier/bin/prettier.cjs --write .",
+    "format:check": "./node_modules/prettier/bin/prettier.cjs --check .",
+    "test": "./node_modules/vitest/vitest.mjs run",
+    "prepare": "./node_modules/husky/bin.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.2.1",
+    "@commitlint/config-conventional": "^21.2.0",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.8.1",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "prettier": "^3.9.6",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.67.0",
+    "vitest": "^4.1.10"
+  }
+}
