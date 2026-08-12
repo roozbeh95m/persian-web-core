@@ -7,6 +7,7 @@ import * as format from './format/index.js';
 import * as normalize from './normalize/index.js';
 import * as nationalId from './national-id/index.js';
 import * as phone from './phone/index.js';
+import * as search from './search/index.js';
 
 describe('@persian-web/core', () => {
   it('exports digit converters from the root entry', () => {
@@ -78,5 +79,18 @@ describe('@persian-web/core', () => {
   it('re-exports the same functions as @persian-web/core/national-id', () => {
     expect(core.isValidNationalId).toBe(nationalId.isValidNationalId);
     expect(core.validateNationalId).toBe(nationalId.validateNationalId);
+  });
+
+  it('exports Persian search helpers from the root entry', () => {
+    expect(core.normalizeForSearch).toBeTypeOf('function');
+    expect(core.matchesPersian).toBeTypeOf('function');
+    expect(core.includesPersian).toBeTypeOf('function');
+    expect(core.includesPersian('گوشی سامسونگ كلاسیک', 'كلاس')).toBe(true);
+  });
+
+  it('re-exports the same functions as @persian-web/core/search', () => {
+    expect(core.normalizeForSearch).toBe(search.normalizeForSearch);
+    expect(core.matchesPersian).toBe(search.matchesPersian);
+    expect(core.includesPersian).toBe(search.includesPersian);
   });
 });

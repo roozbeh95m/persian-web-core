@@ -45,12 +45,20 @@ describe('package exports and build layout', () => {
     });
   });
 
+  it('exposes the search subpath export', () => {
+    expect(packageJson.exports['./search']).toEqual({
+      types: './dist/search/index.d.ts',
+      import: './dist/search/index.js',
+    });
+  });
+
   it('includes format in the root export graph only via explicit re-exports', () => {
     const rootSource = readFileSync(join(packageRoot, 'src/index.ts'), 'utf8');
     expect(rootSource).toContain("from './format/index.js'");
     expect(rootSource).toContain("from './currency/index.js'");
     expect(rootSource).toContain("from './phone/index.js'");
     expect(rootSource).toContain("from './national-id/index.js'");
+    expect(rootSource).toContain("from './search/index.js'");
   });
 
   it('emits standalone format build artifacts', () => {
@@ -79,5 +87,13 @@ describe('package exports and build layout', () => {
     const nationalIdSource = readFileSync(nationalIdEntry, 'utf8');
     expect(nationalIdSource).toContain('validateNationalId');
     expect(nationalIdSource).not.toContain('normalizePersian');
+  });
+
+  it('emits standalone search build artifacts', () => {
+    const searchEntry = join(packageRoot, 'dist/search/index.js');
+    const searchSource = readFileSync(searchEntry, 'utf8');
+    expect(searchSource).toContain('normalizeForSearch');
+    expect(searchSource).toContain('includesPersian');
+    expect(searchSource).not.toContain('formatNumber');
   });
 });

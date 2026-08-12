@@ -6,6 +6,11 @@ export { formatCurrency, formatRial, formatToman } from './currency/index.js';
 export { formatNumber } from './format/index.js';
 export { normalizePersian } from './normalize/index.js';
 export {
+  includesPersian,
+  matchesPersian,
+  normalizeForSearch,
+} from './search/index.js';
+export {
   formatIranianPhone,
   isValidIranianPhone,
   normalizePhone,

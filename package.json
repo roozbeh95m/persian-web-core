@@ -33,6 +33,10 @@
     "./national-id": {
       "types": "./dist/national-id/index.d.ts",
       "import": "./dist/national-id/index.js"
+    },
+    "./search": {
+      "types": "./dist/search/index.d.ts",
+      "import": "./dist/search/index.js"
     }
   },
   "main": "./dist/index.js",
@@ -49,6 +53,7 @@
     "format": "./node_modules/prettier/bin/prettier.cjs --write .",
     "format:check": "./node_modules/prettier/bin/prettier.cjs --check .",
     "test": "./node_modules/vitest/vitest.mjs run",
+    "bench": "./node_modules/vitest/vitest.mjs bench",
     "prepare": "./node_modules/husky/bin.js"
   },
   "engines": {
