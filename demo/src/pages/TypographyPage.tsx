@@ -24,6 +24,7 @@ fixPersianTypography(${JSON.stringify(input)});
       titleFa="تایپوگرافی"
       description="اصلاح نمایشی محافظه‌کارانه: نیم‌فاصله پیشوندهای فعلی، گیومه فارسی، و فاصله‌گذاری علائم."
       importPath="@persian-web/core/typography"
+      modulePath="/typography"
       controls={
         <>
           <Field label="متن ورودی">

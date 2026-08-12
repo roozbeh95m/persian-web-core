@@ -42,6 +42,7 @@ isMixedDirection(${JSON.stringify(input)});
       titleFa="جهت متن"
       description="تشخیص rtl / ltr / mixed / neutral از کاراکترهای قوی — برای تنظیم dir در UI."
       importPath="@persian-web/core/direction"
+      modulePath="/direction"
       controls={
         <>
           <Field label="متن ورودی">

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { DEMO_ROUTES, HOME_PATH } from '../examples/routes';
+import { DOC_NAV, GUIDE_PATHS, HOME_PATH } from '../docs/nav';
 
 const GITHUB_URL = 'https://github.com/roozbeh95m/persian-web-core';
 const NPM_URL = 'https://www.npmjs.com/package/@persian-web/core';
@@ -20,15 +20,17 @@ export function Shell({
   onNavigate,
   children,
 }: ShellProps) {
+  const activePath = path === HOME_PATH ? GUIDE_PATHS.introduction : path;
+
   return (
     <div className="app-shell">
       <header className="topbar">
         <a
           className="brand"
-          href={`#${HOME_PATH}`}
+          href={`#${GUIDE_PATHS.introduction}`}
           onClick={(event) => {
             event.preventDefault();
-            onNavigate(HOME_PATH);
+            onNavigate(GUIDE_PATHS.introduction);
           }}
         >
           <span className="brand__mark" aria-hidden="true">
@@ -36,7 +38,7 @@ export function Shell({
           </span>
           <span className="brand__text">
             <span className="brand__name">@persian-web/core</span>
-            <span className="brand__tag">Docs & playground</span>
+            <span className="brand__tag">Documentation</span>
           </span>
         </a>
         <button
@@ -46,7 +48,7 @@ export function Shell({
           aria-controls="demo-nav"
           onClick={onToggleNav}
         >
-          فهرست
+          Menu
         </button>
       </header>
 
@@ -54,10 +56,10 @@ export function Shell({
         <div className="sidebar__brand">
           <a
             className="brand"
-            href={`#${HOME_PATH}`}
+            href={`#${GUIDE_PATHS.introduction}`}
             onClick={(event) => {
               event.preventDefault();
-              onNavigate(HOME_PATH);
+              onNavigate(GUIDE_PATHS.introduction);
             }}
           >
             <span className="brand__mark" aria-hidden="true">
@@ -65,50 +67,42 @@ export function Shell({
             </span>
             <span className="brand__text">
               <span className="brand__name">@persian-web/core</span>
-              <span className="brand__tag">Docs & playground</span>
+              <span className="brand__tag">Documentation</span>
             </span>
           </a>
+          <p className="sidebar__version" dir="ltr">
+            v0.1.3 · MIT · ESM
+          </p>
         </div>
 
-        <p className="nav-section-label">Overview</p>
-        <ul className="nav-list">
-          <li>
-            <a
-              className={`nav-link${path === HOME_PATH ? ' is-active' : ''}`}
-              href={`#${HOME_PATH}`}
-              onClick={(event) => {
-                event.preventDefault();
-                onNavigate(HOME_PATH);
-              }}
-            >
-              خانه
-              <span className="nav-link__en">Home</span>
-            </a>
-          </li>
-        </ul>
-
-        <p className="nav-section-label">Playgrounds</p>
-        <ul className="nav-list">
-          {DEMO_ROUTES.map((route) => {
-            const active = path === route.path;
-            return (
-              <li key={route.path}>
-                <a
-                  className={`nav-link${active ? ' is-active' : ''}`}
-                  href={`#${route.path}`}
-                  aria-current={active ? 'page' : undefined}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    onNavigate(route.path);
-                  }}
-                >
-                  {route.titleFa}
-                  <span className="nav-link__en">{route.title}</span>
-                </a>
-              </li>
-            );
-          })}
-        </ul>
+        <div className="sidebar__scroll">
+          {DOC_NAV.map((section) => (
+            <div key={section.id} className="nav-section">
+              <p className="nav-section-label">{section.label}</p>
+              <ul className="nav-list">
+                {section.items.map((item) => {
+                  const active = activePath === item.path;
+                  return (
+                    <li key={item.path}>
+                      <a
+                        className={`nav-link${active ? ' is-active' : ''}`}
+                        href={`#${item.path}`}
+                        aria-current={active ? 'page' : undefined}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          onNavigate(item.path);
+                        }}
+                      >
+                        {item.title}
+                        <span className="nav-link__en">{item.titleFa}</span>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
+        </div>
 
         <div className="sidebar__links">
           <a href={GITHUB_URL} target="_blank" rel="noreferrer">
@@ -124,7 +118,7 @@ export function Shell({
         <div className="app-main__inner">
           {children}
           <footer className="footer">
-            <span>MIT · TypeScript · ESM · tree-shakeable</span>
+            <span dir="ltr">MIT · TypeScript · ESM · tree-shakeable</span>
             <span>
               <a href={GITHUB_URL} target="_blank" rel="noreferrer">
                 GitHub

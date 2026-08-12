@@ -45,6 +45,7 @@ validateNationalId(${JSON.stringify(input)});
       titleFa="کد ملی"
       description="اعتبارسنجی کد ملی با checksum و دلیل مشخص برای ورودی نامعتبر."
       importPath="@persian-web/core/national-id"
+      modulePath="/national-id"
       controls={
         <>
           <Field label="کد ملی">

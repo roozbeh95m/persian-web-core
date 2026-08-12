@@ -51,6 +51,7 @@ formatIranianPhone(${JSON.stringify(input)}, {
       titleFa="تلفن"
       description="نرمال‌سازی، اعتبارسنجی و قالب‌بندی موبایل ایران (نه تلفن ثابت)."
       importPath="@persian-web/core/phone"
+      modulePath="/phone"
       controls={
         <>
           <Field label="شماره">

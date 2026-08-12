@@ -27,6 +27,7 @@ toEnglishDigits(${JSON.stringify(input)});
       titleFa="ارقام"
       description="تبدیل ارقام انگلیسی، فارسی و عربی-هندی به یکدیگر بدون تغییر بقیه متن."
       importPath="@persian-web/core/digits"
+      modulePath="/digits"
       controls={
         <>
           <Field label="متن یا عدد">

@@ -29,7 +29,7 @@ export function CodeBlock({ code, label = 'example' }: CodeBlockProps) {
               .then(() => setCopied(true));
           }}
         >
-          {copied ? 'کپی شد' : 'کپی'}
+          {copied ? 'Copied' : 'Copy'}
         </button>
       </div>
       <pre dir="ltr">{code}</pre>

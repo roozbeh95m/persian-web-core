@@ -23,6 +23,7 @@ persianSlug(${JSON.stringify(input)});
       titleFa="اسلاگ"
       description="ساخت اسلاگ URL با حفظ حروف فارسی — بدون لاتین‌نویسی اجباری."
       importPath="@persian-web/core/slug"
+      modulePath="/slug"
       controls={
         <>
           <Field label="عنوان">

@@ -46,6 +46,7 @@ sortPersian(items, {
       titleFa="مرتب‌سازی"
       description="مرتب‌سازی فارسی با Collator — حساس به ی/ک و ارقام عددی."
       importPath="@persian-web/core/sort"
+      modulePath="/sort"
       controls={
         <>
           <Field label="آیتم‌ها (هر خط یک مورد)">

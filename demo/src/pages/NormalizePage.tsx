@@ -39,6 +39,7 @@ normalizePersian(${JSON.stringify(input)}, {
       titleFa="نرمال‌سازی"
       description="یکسان‌سازی حروف فارسی/عربی، پاک‌سازی فاصله مجازی، و تبدیل اختیاری ارقام."
       importPath="@persian-web/core/normalize"
+      modulePath="/normalize"
       controls={
         <>
           <Field label="متن ورودی">

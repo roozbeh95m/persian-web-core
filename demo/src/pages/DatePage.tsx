@@ -163,6 +163,7 @@ relativeTime(new Date(now.getTime() + ${relativeOffsetMs}), {
       titleFa="تاریخ جلالی"
       description="تبدیل میلادی ↔ شمسی، قالب‌بندی با الگوی تاریخ، و زمان نسبی فارسی."
       importPath="@persian-web/core/date"
+      modulePath="/date"
       controls={
         <>
           <Field label="جهت تبدیل">

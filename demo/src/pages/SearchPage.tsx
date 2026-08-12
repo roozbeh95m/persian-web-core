@@ -61,6 +61,7 @@ catalog.filter((item) => matchesPersian(item, ${JSON.stringify(query)}));
       titleFa="جستجو"
       description="جستجوی مقاوم به اختلاف ی/ک، ارقام و فاصله مجازی — مناسب فیلتر محصولات و autocomplete."
       importPath="@persian-web/core/search"
+      modulePath="/search"
       controls={
         <>
           <Field label="عبارت جستجو (query)">

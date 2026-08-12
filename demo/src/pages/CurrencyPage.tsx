@@ -81,6 +81,7 @@ formatRial(${valid ? numeric : 0}, { locale: '${locale}'${
       titleFa="واحد پول"
       description="نمایش تومان، ریال و ارزهای رایج — بدون تبدیل خودکار IRR↔IRT."
       importPath="@persian-web/core/currency"
+      modulePath="/currency"
       controls={
         <>
           <Field label="مبلغ">

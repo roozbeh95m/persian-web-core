@@ -70,6 +70,7 @@ formatNumber(${valid ? numeric : '/* NaN */'}, {
       titleFa="اعداد"
       description="قالب‌بندی اعداد با Intl؛ پشتیبانی از locale فارسی، ارقام فارسی و نماد فشرده."
       importPath="@persian-web/core/format"
+      modulePath="/numbers"
       controls={
         <>
           <Field label="عدد">
