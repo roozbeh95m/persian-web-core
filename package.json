@@ -1,6 +1,6 @@
 {
   "name": "@persian-web/core",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Core Persian web utilities",
   "license": "MIT",
   "repository": {
@@ -73,6 +73,7 @@
     "dist",
     "README.md",
     "LICENSE",
+    "CHANGELOG.md",
     "docs"
   ],
   "scripts": {
