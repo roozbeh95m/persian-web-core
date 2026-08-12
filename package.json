@@ -10,7 +10,7 @@
   "bugs": {
     "url": "https://github.com/roozbeh95m/persian-web-core/issues"
   },
-  "homepage": "https://github.com/roozbeh95m/persian-web-core#readme",
+  "homepage": "https://github.com/roozbeh95m/persian-web-core",
   "type": "module",
   "sideEffects": false,
   "exports": {
