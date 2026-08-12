@@ -1,16 +1,16 @@
 import eslint from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
-import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
-export default defineConfig(
+export default tseslint.config(
   {
     ignores: ['dist/**', 'node_modules/**', 'coverage/**'],
   },
   eslint.configs.recommended,
-  tseslint.configs.recommended,
+  ...tseslint.configs.recommended,
   {
     files: ['**/*.{ts,tsx,mts,cts}'],
+    extends: [...tseslint.configs.recommendedTypeChecked],
     languageOptions: {
       parserOptions: {
         projectService: true,
@@ -52,6 +52,7 @@ export default defineConfig(
     rules: {
       // Allow focused assertion style in tests without weakening source rules.
       '@typescript-eslint/no-non-null-assertion': 'off',
+      '@typescript-eslint/unbound-method': 'off',
     },
   },
   eslintConfigPrettier,
