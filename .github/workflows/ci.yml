@@ -41,6 +41,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Build
+        run: npm run build
+
       - name: Test
         if: matrix.node-version != 20
         run: npm test
@@ -48,9 +51,6 @@ jobs:
       - name: Test with coverage
         if: matrix.node-version == 20
         run: npm run test:coverage
-
-      - name: Build
-        run: npm run build
 
       - name: Bundle size
         if: matrix.node-version == 20
