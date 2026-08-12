@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import * as core from './index.js';
 import * as digits from './digits/index.js';
+import * as format from './format/index.js';
 import * as normalize from './normalize/index.js';
 
 describe('@persian-web/core', () => {
@@ -24,5 +25,14 @@ describe('@persian-web/core', () => {
 
   it('re-exports the same function as @persian-web/core/normalize', () => {
     expect(core.normalizePersian).toBe(normalize.normalizePersian);
+  });
+
+  it('exports formatNumber from the root entry', () => {
+    expect(core.formatNumber).toBeTypeOf('function');
+    expect(core.formatNumber(1234567)).toBe('1,234,567');
+  });
+
+  it('re-exports the same function as @persian-web/core/format', () => {
+    expect(core.formatNumber).toBe(format.formatNumber);
   });
 });

@@ -17,6 +17,10 @@
     "./normalize": {
       "types": "./dist/normalize/index.d.ts",
       "import": "./dist/normalize/index.js"
+    },
+    "./format": {
+      "types": "./dist/format/index.d.ts",
+      "import": "./dist/format/index.js"
     }
   },
   "main": "./dist/index.js",

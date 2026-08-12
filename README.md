@@ -129,13 +129,76 @@ normalizePersian('  سلام\t\tدنیا  ', { normalizeWhitespace: true }); // 
 - Inputs are never mutated. When nothing changes, the original string reference is returned.
 - Search / stemming / tokenizing are out of scope for this module.
 
+## Format
+
+Locale-aware number formatting powered by native `Intl.NumberFormat`, with optional Persian digit output.
+
+### `formatNumber(value, options?)`
+
+```ts
+import { formatNumber } from '@persian-web/core';
+// or: import { formatNumber } from '@persian-web/core/format';
+
+formatNumber(1234567);
+// '1,234,567'
+
+formatNumber(1234567, { locale: 'fa-IR' });
+// '۱٬۲۳۴٬۵۶۷'
+
+formatNumber(-1234.5, { locale: 'fa-IR', precision: 2 });
+// '‎−۱٬۲۳۴٫۵۰'
+
+formatNumber(1_200_000, { notation: 'compact' });
+// '1.2M'
+
+formatNumber(1_200_000, { locale: 'fa-IR', notation: 'compact' });
+// '۱٫۲ میلیون'
+```
+
+#### Non-finite values
+
+`NaN` and `±Infinity` are formatted explicitly through `Intl.NumberFormat` so labels stay locale-aware. Grouping, precision, and compact options are ignored for these values.
+
+| Value       | `en-US` | `fa-IR` |
+| ----------- | ------- | ------- |
+| `NaN`       | `NaN`   | `ناعدد` |
+| `Infinity`  | `∞`     | `∞`     |
+| `-Infinity` | `-∞`    | `‎−∞`   |
+
+### Options
+
+| Option                  | Type                      | Default        | Description                                               |
+| ----------------------- | ------------------------- | -------------- | --------------------------------------------------------- |
+| `locale`                | `string`                  | `'en-US'`      | BCP 47 locale (`'fa-IR'` for Persian separators).         |
+| `digits`                | `'persian' \| 'english'`  | locale default | Override digit script after formatting.                   |
+| `useGrouping`           | `boolean`                 | `true`         | Thousands / grouping separators (standard notation only). |
+| `precision`             | `number`                  | —              | Fixed decimal places; overrides min/max fraction digits.  |
+| `minimumFractionDigits` | `number`                  | —              | Minimum digits after the decimal separator.               |
+| `maximumFractionDigits` | `number`                  | —              | Maximum digits after the decimal separator.               |
+| `notation`              | `'standard' \| 'compact'` | `'standard'`   | Full numeral or compact form (`1.2M`, `۱٫۲ میلیون`).      |
+| `compactDisplay`        | `'short' \| 'long'`       | `'short'`      | Wording for compact notation.                             |
+
+```ts
+formatNumber(1234567, { useGrouping: false }); // '1234567'
+formatNumber(1.2345, { precision: 2 }); // '1.23'
+formatNumber(1234567, { locale: 'fa-IR', digits: 'english' }); // '1٬234٬567'
+formatNumber(987, { notation: 'compact' }); // '987'
+```
+
+### Notes
+
+- Accepts `number` only. `NaN` and `±Infinity` are supported and documented above.
+- Uses native `Intl.NumberFormat`; no extra runtime dependencies.
+- Inputs are never mutated.
+
 ## Entry points
 
-| Import                        | Exports                                                             |
-| ----------------------------- | ------------------------------------------------------------------- |
-| `@persian-web/core`           | Full public API (digits + normalize)                                |
-| `@persian-web/core/digits`    | `toPersianDigits`, `toEnglishDigits`                                |
-| `@persian-web/core/normalize` | `normalizePersian`, `NormalizePersianOptions`, `DigitNormalization` |
+| Import                        | Exports                                                                             |
+| ----------------------------- | ----------------------------------------------------------------------------------- |
+| `@persian-web/core`           | Full public API (digits + normalize + format)                                       |
+| `@persian-web/core/digits`    | `toPersianDigits`, `toEnglishDigits`                                                |
+| `@persian-web/core/normalize` | `normalizePersian`, `NormalizePersianOptions`, `DigitNormalization`                 |
+| `@persian-web/core/format`    | `formatNumber`, `FormatNumberOptions`, `FormatNumberDigits`, `FormatNumberNotation` |
 
 ## License
 
