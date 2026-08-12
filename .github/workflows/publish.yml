@@ -20,14 +20,15 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 20
+          # Node 24 ships a recent enough npm for OIDC; avoid registry-url so
+          # setup-node does not write an empty NODE_AUTH_TOKEN into .npmrc.
+          node-version: 24
           cache: npm
-          registry-url: https://registry.npmjs.org
 
       # Trusted publishing needs npm CLI >= 11.5.1
       - name: Upgrade npm
