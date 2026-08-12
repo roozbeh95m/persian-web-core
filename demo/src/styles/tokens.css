@@ -1,0 +1,61 @@
+:root {
+  color-scheme: light;
+
+  --font-sans: 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --bg: #f3efe6;
+  --bg-elevated: #faf7f1;
+  --bg-muted: #e8e1d4;
+  --bg-code: #1c2421;
+  --ink: #1a221f;
+  --ink-soft: #4a554f;
+  --ink-faint: #6f7a73;
+  --accent: #0f6b57;
+  --accent-strong: #0a4f40;
+  --accent-soft: #d5ebe3;
+  --accent-contrast: #f4fff9;
+  --border: #d4cbb8;
+  --border-strong: #b9ae97;
+  --danger: #9b2c2c;
+  --danger-soft: #f8e4e4;
+  --ok: #1f6f45;
+  --ok-soft: #dff3e8;
+  --shadow: 0 18px 40px rgb(26 34 31 / 8%);
+  --radius: 14px;
+  --radius-sm: 10px;
+  --nav-width: 17.5rem;
+  --content-max: 72rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --focus: 0 0 0 3px rgb(15 107 87 / 28%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #101614;
+    --bg-elevated: #18201d;
+    --bg-muted: #24302b;
+    --bg-code: #0b100e;
+    --ink: #eef3ef;
+    --ink-soft: #b7c2bb;
+    --ink-faint: #8a968f;
+    --accent: #4db89a;
+    --accent-strong: #7ad4b8;
+    --accent-soft: #1d3a32;
+    --accent-contrast: #04140f;
+    --border: #2d3a35;
+    --border-strong: #44544d;
+    --danger: #f0a0a0;
+    --danger-soft: #3a1f1f;
+    --ok: #7dcea0;
+    --ok-soft: #1c3326;
+    --shadow: 0 18px 40px rgb(0 0 0 / 35%);
+  }
+}

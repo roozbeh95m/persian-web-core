@@ -10,6 +10,7 @@ export default tseslint.config(
       'coverage/**',
       'scripts/**',
       'examples/**',
+      'demo/**',
     ],
   },
   eslint.configs.recommended,

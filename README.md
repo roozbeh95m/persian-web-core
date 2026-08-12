@@ -98,7 +98,12 @@ import { isRTL } from '@persian-web/core/direction';
 
 ## Examples
 
-Runnable examples live in [`examples/`](./examples/) and use the real public API:
+Runnable Node examples live in [`examples/`](./examples/). For an interactive browser playground of the public API, see [`demo/`](./demo/):
+
+```bash
+npm --prefix demo install --ignore-scripts
+npm run demo
+```
 
 | Example                                                       | Demonstrates                                   |
 | ------------------------------------------------------------- | ---------------------------------------------- |

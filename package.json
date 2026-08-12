@@ -121,6 +121,11 @@
     "bench": "./node_modules/vitest/vitest.mjs bench",
     "benchmark": "./node_modules/vitest/vitest.mjs bench --run",
     "examples": "npm run build && node ./examples/quick-start.mjs",
+    "demo": "npm --prefix demo run dev",
+    "demo:dev": "npm --prefix demo run dev",
+    "demo:build": "npm --prefix demo run build",
+    "demo:preview": "npm --prefix demo run preview",
+    "demo:typecheck": "npm --prefix demo run typecheck",
     "prepack": "npm run build",
     "prepare": "./node_modules/husky/bin.js"
   },

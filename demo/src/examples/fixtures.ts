@@ -1,0 +1,16 @@
+export const fixtures = {
+  digits: 'قیمت: 2500 و عربي ٠١٢',
+  normalize: 'كيلكسيون كلاسيك مي رود',
+  typography: 'می رود و "سلام"',
+  directionRtl: 'سلام دنیا',
+  directionMixed: 'Android گوشی ۱۲۳',
+  directionLtr: 'Hello world 123',
+  searchHaystack: 'گوشی سامسونگ كلاسیک',
+  searchNeedle: 'کلاس',
+  sortLines: ['یوسف', 'آرش', 'بابک', '۱۲', '2', 'کتاب', 'كيان'] as string[],
+  slug: 'راهنمای شروع سریع فارسی',
+  phone: '۰۹۱۲۱۲۳۴۵۶۷',
+  nationalId: '0013542419',
+  number: 1_250_000,
+  currency: 1_250_000,
+};
