@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+# Strip Cursor agent attribution from commit messages.
+if [ -f "$1" ]; then
+  sed -i '' '/Co-authored-by: Cursor/d' "$1"
+  sed -i '' '/Made-with: Cursor/d' "$1"
+fi
