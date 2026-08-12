@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://roozbeh95m.github.io/persian-web-core/sitemap.txt

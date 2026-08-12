@@ -164,8 +164,8 @@ code,
   background: var(--bg-elevated);
 }
 
-.sidebar[hidden] {
-  display: none !important;
+.sidebar:not(.is-open) {
+  display: none;
 }
 
 .sidebar__brand {
@@ -548,7 +548,8 @@ code,
   gap: var(--space-2);
 }
 
-.field label {
+.field label,
+.field__caption {
   font-size: 0.85rem;
   color: var(--ink-soft);
 }
@@ -690,6 +691,11 @@ code,
   color: #4ec9a8;
 }
 
+.copy-button.is-failed {
+  border-color: #f0a8a0;
+  color: #f0a8a0;
+}
+
 .code-block pre {
   margin: 0;
   padding: var(--space-4);
@@ -699,6 +705,51 @@ code,
   line-height: 1.65;
   color: #dff0e7;
   white-space: pre;
+}
+
+.skip-link {
+  position: absolute;
+  inset-inline-start: var(--space-3);
+  top: var(--space-3);
+  z-index: 100;
+  padding: 0.55rem 0.85rem;
+  border-radius: var(--radius-sm);
+  background: var(--ink);
+  color: var(--bg-elevated);
+  text-decoration: none;
+  font-weight: 600;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.page-fallback {
+  padding: var(--space-6) 0;
+  color: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+}
+
+.app-main:focus {
+  outline: none;
+}
+
+.app-main:focus-visible {
+  box-shadow: none;
 }
 
 .note {
@@ -1057,7 +1108,8 @@ code,
   }
 
   .sidebar,
-  .sidebar[hidden] {
+  .sidebar:not(.is-open),
+  .sidebar.is-open {
     position: sticky;
     top: 0;
     height: 100vh;

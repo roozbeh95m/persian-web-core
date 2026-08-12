@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#121614"/>
+  <rect x="64" y="64" width="1072" height="502" rx="24" stroke="#3a4741" stroke-width="2" fill="#151a18"/>
+  <rect x="96" y="112" width="72" height="72" rx="16" fill="#1a1f1c" stroke="#3a4741"/>
+  <text x="132" y="158" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="28" font-weight="500" fill="#e8f2ec">pw</text>
+  <text x="196" y="160" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="42" font-weight="600" fill="#eef2ef">@persian-web/core</text>
+  <text x="96" y="280" font-family="ui-sans-serif, system-ui, sans-serif" font-size="48" font-weight="600" fill="#eef2ef">Persian &amp; Farsi utilities for the modern web</text>
+  <text x="96" y="360" font-family="ui-sans-serif, system-ui, sans-serif" font-size="28" fill="#aeb7b1">Digits · Jalali · RTL · Typography · Iranian forms</text>
+  <text x="96" y="480" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22" fill="#4ec9a8">TypeScript · ESM · tree-shakeable · MIT</text>
+</svg>

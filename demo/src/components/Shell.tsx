@@ -1,6 +1,8 @@
-import type { ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 
 import { DOC_NAV, GUIDE_PATHS, HOME_PATH } from '../docs/nav';
+
+declare const __LIB_VERSION__: string;
 
 const GITHUB_URL = 'https://github.com/roozbeh95m/persian-web-core';
 const NPM_URL = 'https://www.npmjs.com/package/@persian-web/core';
@@ -21,9 +23,38 @@ export function Shell({
   children,
 }: ShellProps) {
   const activePath = path === HOME_PATH ? GUIDE_PATHS.introduction : path;
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const sidebarRef = useRef<HTMLElement>(null);
+  const onToggleNavRef = useRef(onToggleNav);
+  onToggleNavRef.current = onToggleNav;
+
+  useEffect(() => {
+    if (!navOpen) {
+      return;
+    }
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onToggleNavRef.current();
+        menuButtonRef.current?.focus();
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    const firstLink =
+      sidebarRef.current?.querySelector<HTMLElement>('a.nav-link');
+    firstLink?.focus();
+
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [navOpen]);
 
   return (
     <div className="app-shell">
+      <a className="skip-link" href="#main-content">
+        Skip to content
+      </a>
+
       <header className="topbar">
         <a
           className="brand"
@@ -42,17 +73,26 @@ export function Shell({
           </span>
         </a>
         <button
+          ref={menuButtonRef}
           type="button"
-          className="icon-button"
+          className={`icon-button${navOpen ? ' is-active' : ''}`}
           aria-expanded={navOpen}
           aria-controls="demo-nav"
+          aria-label={
+            navOpen ? 'Close navigation menu' : 'Open navigation menu'
+          }
           onClick={onToggleNav}
         >
-          Menu
+          {navOpen ? 'Close' : 'Menu'}
         </button>
       </header>
 
-      <aside className="sidebar" id="demo-nav" hidden={!navOpen}>
+      <aside
+        ref={sidebarRef}
+        className={`sidebar${navOpen ? ' is-open' : ''}`}
+        id="demo-nav"
+        aria-label="Documentation"
+      >
         <div className="sidebar__brand">
           <a
             className="brand"
@@ -71,15 +111,17 @@ export function Shell({
             </span>
           </a>
           <p className="sidebar__version" dir="ltr">
-            v0.1.3 · MIT · ESM
+            v{__LIB_VERSION__} · MIT · ESM
           </p>
         </div>
 
-        <div className="sidebar__scroll">
+        <nav className="sidebar__scroll" aria-label="Primary">
           {DOC_NAV.map((section) => (
             <div key={section.id} className="nav-section">
-              <p className="nav-section-label">{section.label}</p>
-              <ul className="nav-list">
+              <p className="nav-section-label" id={`nav-${section.id}`}>
+                {section.label}
+              </p>
+              <ul className="nav-list" aria-labelledby={`nav-${section.id}`}>
                 {section.items.map((item) => {
                   const active = activePath === item.path;
                   return (
@@ -94,7 +136,9 @@ export function Shell({
                         }}
                       >
                         {item.title}
-                        <span className="nav-link__en">{item.titleFa}</span>
+                        <span className="nav-link__en" lang="fa" dir="rtl">
+                          {item.titleFa}
+                        </span>
                       </a>
                     </li>
                   );
@@ -102,29 +146,29 @@ export function Shell({
               </ul>
             </div>
           ))}
-        </div>
+        </nav>
 
         <div className="sidebar__links">
-          <a href={GITHUB_URL} target="_blank" rel="noreferrer">
+          <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
             GitHub
           </a>
-          <a href={NPM_URL} target="_blank" rel="noreferrer">
+          <a href={NPM_URL} target="_blank" rel="noopener noreferrer">
             npm
           </a>
         </div>
       </aside>
 
-      <main className="app-main">
+      <main className="app-main" id="main-content" tabIndex={-1}>
         <div className="app-main__inner">
           {children}
           <footer className="footer">
             <span dir="ltr">MIT · TypeScript · ESM · tree-shakeable</span>
             <span>
-              <a href={GITHUB_URL} target="_blank" rel="noreferrer">
+              <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
                 GitHub
               </a>
               {' · '}
-              <a href={NPM_URL} target="_blank" rel="noreferrer">
+              <a href={NPM_URL} target="_blank" rel="noopener noreferrer">
                 npm
               </a>
             </span>

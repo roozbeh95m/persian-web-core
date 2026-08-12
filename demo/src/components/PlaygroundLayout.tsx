@@ -36,7 +36,9 @@ export function PlaygroundLayout({
         <p className="eyebrow">API Reference</p>
         <h1>
           {title}
-          <span className="page-hero__en">{titleFa}</span>
+          <span className="page-hero__en" lang="fa" dir="rtl">
+            {titleFa}
+          </span>
         </h1>
         <p>{description}</p>
         <p className="import-chip" dir="ltr">

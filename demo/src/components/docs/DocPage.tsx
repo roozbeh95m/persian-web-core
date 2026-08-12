@@ -14,7 +14,11 @@ export function DocPage({ title, titleFa, lead, children, toc }: DocPageProps) {
       <header className="doc-page__header">
         <h1>
           {title}
-          {titleFa ? <span className="page-hero__en">{titleFa}</span> : null}
+          {titleFa ? (
+            <span className="page-hero__en" lang="fa" dir="rtl">
+              {titleFa}
+            </span>
+          ) : null}
         </h1>
         <p className="doc-page__lead">{lead}</p>
       </header>

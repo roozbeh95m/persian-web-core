@@ -1,11 +1,15 @@
+import { copyFileSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 
 const demoRoot = path.dirname(fileURLToPath(import.meta.url));
 const librarySrc = path.resolve(demoRoot, '../src');
+const libraryPkg = JSON.parse(
+  readFileSync(path.resolve(demoRoot, '../package.json'), 'utf8'),
+) as { version: string };
 
 const subpaths = [
   'digits',
@@ -22,9 +26,24 @@ const subpaths = [
   'direction',
 ] as const;
 
-export default defineConfig({
-  plugins: [react()],
+/** Copy index.html → 404.html so GitHub Pages serves the SPA for unknown paths. */
+function githubPagesSpaFallback(): Plugin {
+  return {
+    name: 'github-pages-spa-fallback',
+    closeBundle() {
+      const indexHtml = path.join(demoRoot, 'dist/index.html');
+      copyFileSync(indexHtml, path.join(demoRoot, 'dist/404.html'));
+    },
+  };
+}
+
+export default defineConfig(({ mode }) => ({
+  plugins: [react(), githubPagesSpaFallback()],
+  // GitHub Pages project sites need e.g. DEMO_BASE=/persian-web-core/
   base: process.env.DEMO_BASE ?? '/',
+  define: {
+    __LIB_VERSION__: JSON.stringify(libraryPkg.version),
+  },
   resolve: {
     // More-specific subpath aliases must come before the package root.
     // String finds are prefix matches in Vite.
@@ -48,9 +67,33 @@ export default defineConfig({
       strict: false,
     },
   },
+  preview: {
+    port: 4173,
+  },
   build: {
     outDir: 'dist',
     emptyOutDir: true,
-    sourcemap: true,
+    // Keep maps opt-in for production deploys (smaller artifact by default).
+    sourcemap: process.env.DEMO_SOURCEMAP === 'true' || mode === 'development',
+    target: 'es2022',
+    cssCodeSplit: true,
+    reportCompressedSize: true,
+    chunkSizeWarningLimit: 600,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/react-dom')) {
+            return 'react-dom';
+          }
+          if (id.includes('node_modules/react')) {
+            return 'react';
+          }
+          if (id.includes('/src/') && !id.includes('/demo/')) {
+            return 'persian-web-core';
+          }
+          return undefined;
+        },
+      },
+    },
   },
-});
+}));

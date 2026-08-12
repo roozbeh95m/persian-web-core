@@ -6,8 +6,8 @@ type OutputBlockProps = {
 export function OutputBlock({ label, value }: OutputBlockProps) {
   return (
     <div className="field">
-      {label ? <label>{label}</label> : null}
-      <div className="output" dir="auto">
+      {label ? <div className="field__caption">{label}</div> : null}
+      <div className="output" dir="auto" lang="und">
         {value || '—'}
       </div>
     </div>

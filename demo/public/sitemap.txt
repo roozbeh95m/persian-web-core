@@ -1,0 +1,6 @@
+https://roozbeh95m.github.io/persian-web-core/
+https://roozbeh95m.github.io/persian-web-core/#/introduction
+https://roozbeh95m.github.io/persian-web-core/#/installation
+https://roozbeh95m.github.io/persian-web-core/#/quick-start
+https://roozbeh95m.github.io/persian-web-core/#/api
+https://roozbeh95m.github.io/persian-web-core/#/playground

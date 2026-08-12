@@ -124,6 +124,7 @@
     "demo": "npm --prefix demo run dev",
     "demo:dev": "npm --prefix demo run dev",
     "demo:build": "npm --prefix demo run build",
+    "demo:build:pages": "DEMO_BASE=/persian-web-core/ npm --prefix demo run build",
     "demo:preview": "npm --prefix demo run preview",
     "demo:typecheck": "npm --prefix demo run typecheck",
     "prepack": "npm run build",

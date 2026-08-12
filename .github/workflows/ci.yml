@@ -44,6 +44,16 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Demo typecheck
+        if: matrix.node-version == 20
+        run: npm run demo:typecheck
+
+      - name: Demo build
+        if: matrix.node-version == 20
+        run: |
+          npm --prefix demo ci --ignore-scripts
+          npm run demo:build
+
       - name: Test
         if: matrix.node-version != 20
         run: npm test

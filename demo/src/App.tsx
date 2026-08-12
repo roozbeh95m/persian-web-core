@@ -1,44 +1,105 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { lazy, Suspense, useEffect, useState, type ReactNode } from 'react';
 
 import { Shell } from './components/Shell';
 import { GUIDE_PATHS, HOME_PATH } from './docs/nav';
 import { findRoute, pathFromHash } from './examples/routes';
-import { CurrencyPage } from './pages/CurrencyPage';
-import { DatePage } from './pages/DatePage';
-import { DigitsPage } from './pages/DigitsPage';
-import { DirectionPage } from './pages/DirectionPage';
-import { NationalIdPage } from './pages/NationalIdPage';
-import { NormalizePage } from './pages/NormalizePage';
-import { NumbersPage } from './pages/NumbersPage';
-import { PhonePage } from './pages/PhonePage';
-import { SearchPage } from './pages/SearchPage';
-import { SlugPage } from './pages/SlugPage';
-import { SortPage } from './pages/SortPage';
-import { TypographyPage } from './pages/TypographyPage';
-import { ApiReferencePage } from './pages/guides/ApiReferencePage';
-import { BrowserSupportPage } from './pages/guides/BrowserSupportPage';
-import { ExamplesPage } from './pages/guides/ExamplesPage';
-import { FaqPage } from './pages/guides/FaqPage';
-import { InstallationPage } from './pages/guides/InstallationPage';
-import { IntroductionPage } from './pages/guides/IntroductionPage';
-import { PlaygroundPage } from './pages/guides/PlaygroundPage';
-import { QuickStartPage } from './pages/guides/QuickStartPage';
-import { TypeScriptPage } from './pages/guides/TypeScriptPage';
-import { UseCasesPage } from './pages/guides/UseCasesPage';
+import { useDocumentMeta } from './hooks/useDocumentMeta';
+import { NotFoundPage } from './pages/NotFoundPage';
+
+const DigitsPage = lazy(async () => ({
+  default: (await import('./pages/DigitsPage')).DigitsPage,
+}));
+const NormalizePage = lazy(async () => ({
+  default: (await import('./pages/NormalizePage')).NormalizePage,
+}));
+const NumbersPage = lazy(async () => ({
+  default: (await import('./pages/NumbersPage')).NumbersPage,
+}));
+const CurrencyPage = lazy(async () => ({
+  default: (await import('./pages/CurrencyPage')).CurrencyPage,
+}));
+const DatePage = lazy(async () => ({
+  default: (await import('./pages/DatePage')).DatePage,
+}));
+const DirectionPage = lazy(async () => ({
+  default: (await import('./pages/DirectionPage')).DirectionPage,
+}));
+const TypographyPage = lazy(async () => ({
+  default: (await import('./pages/TypographyPage')).TypographyPage,
+}));
+const SearchPage = lazy(async () => ({
+  default: (await import('./pages/SearchPage')).SearchPage,
+}));
+const SortPage = lazy(async () => ({
+  default: (await import('./pages/SortPage')).SortPage,
+}));
+const SlugPage = lazy(async () => ({
+  default: (await import('./pages/SlugPage')).SlugPage,
+}));
+const PhonePage = lazy(async () => ({
+  default: (await import('./pages/PhonePage')).PhonePage,
+}));
+const NationalIdPage = lazy(async () => ({
+  default: (await import('./pages/NationalIdPage')).NationalIdPage,
+}));
+const IntroductionPage = lazy(async () => ({
+  default: (await import('./pages/guides/IntroductionPage')).IntroductionPage,
+}));
+const InstallationPage = lazy(async () => ({
+  default: (await import('./pages/guides/InstallationPage')).InstallationPage,
+}));
+const QuickStartPage = lazy(async () => ({
+  default: (await import('./pages/guides/QuickStartPage')).QuickStartPage,
+}));
+const ApiReferencePage = lazy(async () => ({
+  default: (await import('./pages/guides/ApiReferencePage')).ApiReferencePage,
+}));
+const ExamplesPage = lazy(async () => ({
+  default: (await import('./pages/guides/ExamplesPage')).ExamplesPage,
+}));
+const BrowserSupportPage = lazy(async () => ({
+  default: (await import('./pages/guides/BrowserSupportPage'))
+    .BrowserSupportPage,
+}));
+const TypeScriptPage = lazy(async () => ({
+  default: (await import('./pages/guides/TypeScriptPage')).TypeScriptPage,
+}));
+const UseCasesPage = lazy(async () => ({
+  default: (await import('./pages/guides/UseCasesPage')).UseCasesPage,
+}));
+const FaqPage = lazy(async () => ({
+  default: (await import('./pages/guides/FaqPage')).FaqPage,
+}));
+const PlaygroundPage = lazy(async () => ({
+  default: (await import('./pages/guides/PlaygroundPage')).PlaygroundPage,
+}));
 
 function readPath(): string {
   return pathFromHash(window.location.hash);
+}
+
+function PageFallback() {
+  return (
+    <div className="page-fallback" role="status" aria-live="polite">
+      Loading…
+    </div>
+  );
 }
 
 export default function App() {
   const [path, setPath] = useState(readPath);
   const [navOpen, setNavOpen] = useState(false);
 
+  useDocumentMeta(path);
+
   useEffect(() => {
     const onHashChange = () => {
       setPath(readPath());
       setNavOpen(false);
       window.scrollTo(0, 0);
+      window.requestAnimationFrame(() => {
+        document.getElementById('main-content')?.focus({ preventScroll: true });
+      });
     };
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
@@ -139,26 +200,7 @@ export default function App() {
         page = <PlaygroundPage onNavigate={navigate} />;
         break;
       default:
-        page = (
-          <article className="page-hero">
-            <h1>Page not found</h1>
-            <p>
-              No documentation page for <code className="mono">{path}</code>.
-            </p>
-            <div className="btn-row">
-              <a
-                className="btn btn--secondary"
-                href={`#${GUIDE_PATHS.introduction}`}
-                onClick={(event) => {
-                  event.preventDefault();
-                  navigate(GUIDE_PATHS.introduction);
-                }}
-              >
-                Back to Introduction
-              </a>
-            </div>
-          </article>
-        );
+        page = <NotFoundPage path={path} onNavigate={navigate} />;
     }
   }
 
@@ -169,7 +211,7 @@ export default function App() {
       onToggleNav={() => setNavOpen((open) => !open)}
       onNavigate={navigate}
     >
-      {page}
+      <Suspense fallback={<PageFallback />}>{page}</Suspense>
     </Shell>
   );
 }
