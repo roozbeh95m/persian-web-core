@@ -52,6 +52,13 @@ describe('package exports and build layout', () => {
     });
   });
 
+  it('exposes the typography subpath export', () => {
+    expect(packageJson.exports['./typography']).toEqual({
+      types: './dist/typography/index.d.ts',
+      import: './dist/typography/index.js',
+    });
+  });
+
   it('includes format in the root export graph only via explicit re-exports', () => {
     const rootSource = readFileSync(join(packageRoot, 'src/index.ts'), 'utf8');
     expect(rootSource).toContain("from './format/index.js'");
@@ -59,6 +66,7 @@ describe('package exports and build layout', () => {
     expect(rootSource).toContain("from './phone/index.js'");
     expect(rootSource).toContain("from './national-id/index.js'");
     expect(rootSource).toContain("from './search/index.js'");
+    expect(rootSource).toContain("from './typography/index.js'");
   });
 
   it('emits standalone format build artifacts', () => {
@@ -95,5 +103,12 @@ describe('package exports and build layout', () => {
     expect(searchSource).toContain('normalizeForSearch');
     expect(searchSource).toContain('includesPersian');
     expect(searchSource).not.toContain('formatNumber');
+  });
+
+  it('emits standalone typography build artifacts', () => {
+    const typographyEntry = join(packageRoot, 'dist/typography/index.js');
+    const typographySource = readFileSync(typographyEntry, 'utf8');
+    expect(typographySource).toContain('fixPersianTypography');
+    expect(typographySource).not.toContain('normalizePersian');
   });
 });

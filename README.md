@@ -129,6 +129,50 @@ normalizePersian('  سلام\t\tدنیا  ', { normalizeWhitespace: true }); // 
 - Inputs are never mutated. When nothing changes, the original string reference is returned.
 - Search / stemming / tokenizing are out of scope for this module.
 
+## Typography
+
+Conservative Persian display typography. Applies only deterministic, safe fixes — not grammar correction, spell checking, or NLP.
+
+### `fixPersianTypography(text)`
+
+```ts
+import { fixPersianTypography } from '@persian-web/core';
+// or: import { fixPersianTypography } from '@persian-web/core/typography';
+
+fixPersianTypography('می رود'); // 'می\u200Cرود'
+fixPersianTypography('سلام ، دنیا'); // 'سلام، دنیا'
+fixPersianTypography('"کتاب"'); // '«کتاب»'
+```
+
+**Rules (applied in order)**
+
+| Rule                        | Behavior                                                                                               |
+| --------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `zwnj-cleanup`              | Collapse consecutive ZWNJs; drop at edges and next to whitespace; keep meaningful joins like `می‌رود`. |
+| `horizontal-space-collapse` | Collapse runs of 2+ spaces or NBSPs to one ASCII space (tabs and newlines preserved).                  |
+| `guillemet-spacing`         | Remove space after `«` and before `»`.                                                                 |
+| `parenthesis-spacing`       | Remove space after `(` and before `)`.                                                                 |
+| `persian-straight-quotes`   | `"…"` → `«…»` when the inner segment is entirely Persian script with at least one letter.              |
+| `verbal-prefix-zwnj`        | `می` / `نمی` / `بی` + space + Persian word (≥2 letters) → insert ZWNJ (e.g. `می رود` → `می‌رود`).      |
+| `punctuation-space-before`  | Remove space before `،` `؛` `؟` `!`, and before `.` after a Persian letter.                            |
+| `punctuation-space-after`   | Insert a space after `،` `؛` `؟` `!` when missing (except before `»`).                                 |
+
+**Not changed (by design)**
+
+| Input       | Why                                                                            |
+| ----------- | ------------------------------------------------------------------------------ |
+| `در شهر`    | `در` is not a closed-list verbal prefix.                                       |
+| `هم کار`    | `هم` is not in the conservative prefix list.                                   |
+| `"hello"`   | Latin-only quoted segments are left unchanged.                                 |
+| `file .txt` | Space before `.` is kept when the preceding character is not a Persian letter. |
+
+**Invariant:** `fixPersianTypography(fixPersianTypography(text)) === fixPersianTypography(text)`.
+
+### Notes
+
+- Inputs are never mutated. When nothing changes, the original string reference is returned.
+- Grammar correction, spell checking, and open-ended rewriting are out of scope.
+
 ## Format
 
 Locale-aware number formatting powered by native `Intl.NumberFormat`, with optional Persian digit output.
@@ -341,15 +385,16 @@ Inputs are never mutated. Unrelated characters are not normalized away.
 
 ## Entry points
 
-| Import                          | Exports                                                                                          |
-| ------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `@persian-web/core`             | Full public API (digits + normalize + format + currency + phone + national-id)                   |
-| `@persian-web/core/digits`      | `toPersianDigits`, `toEnglishDigits`                                                             |
-| `@persian-web/core/normalize`   | `normalizePersian`, `NormalizePersianOptions`, `DigitNormalization`                              |
-| `@persian-web/core/format`      | `formatNumber`, `FormatNumberOptions`, `FormatNumberDigits`, `FormatNumberNotation`              |
-| `@persian-web/core/currency`    | `formatCurrency`, `formatToman`, `formatRial`, currency types                                    |
-| `@persian-web/core/phone`       | `normalizePhone`, `isValidIranianPhone`, `formatIranianPhone`, phone types                       |
-| `@persian-web/core/national-id` | `isValidNationalId`, `validateNationalId`, `NationalIdInvalidReason`, `ValidateNationalIdResult` |
+| Import                          | Exports                                                                                              |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `@persian-web/core`             | Full public API (digits + normalize + format + currency + phone + national-id + search + typography) |
+| `@persian-web/core/digits`      | `toPersianDigits`, `toEnglishDigits`                                                                 |
+| `@persian-web/core/normalize`   | `normalizePersian`, `NormalizePersianOptions`, `DigitNormalization`                                  |
+| `@persian-web/core/typography`  | `fixPersianTypography`                                                                               |
+| `@persian-web/core/format`      | `formatNumber`, `FormatNumberOptions`, `FormatNumberDigits`, `FormatNumberNotation`                  |
+| `@persian-web/core/currency`    | `formatCurrency`, `formatToman`, `formatRial`, currency types                                        |
+| `@persian-web/core/phone`       | `normalizePhone`, `isValidIranianPhone`, `formatIranianPhone`, phone types                           |
+| `@persian-web/core/national-id` | `isValidNationalId`, `validateNationalId`, `NationalIdInvalidReason`, `ValidateNationalIdResult`     |
 
 ## License
 

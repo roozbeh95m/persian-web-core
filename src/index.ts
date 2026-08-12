@@ -5,6 +5,7 @@ export { toEnglishDigits, toPersianDigits } from './digits/index.js';
 export { formatCurrency, formatRial, formatToman } from './currency/index.js';
 export { formatNumber } from './format/index.js';
 export { normalizePersian } from './normalize/index.js';
+export { fixPersianTypography } from './typography/index.js';
 export {
   includesPersian,
   matchesPersian,

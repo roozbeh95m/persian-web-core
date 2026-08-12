@@ -8,6 +8,7 @@ import * as normalize from './normalize/index.js';
 import * as nationalId from './national-id/index.js';
 import * as phone from './phone/index.js';
 import * as search from './search/index.js';
+import * as typography from './typography/index.js';
 
 describe('@persian-web/core', () => {
   it('exports digit converters from the root entry', () => {
@@ -92,5 +93,14 @@ describe('@persian-web/core', () => {
     expect(core.normalizeForSearch).toBe(search.normalizeForSearch);
     expect(core.matchesPersian).toBe(search.matchesPersian);
     expect(core.includesPersian).toBe(search.includesPersian);
+  });
+
+  it('exports fixPersianTypography from the root entry', () => {
+    expect(core.fixPersianTypography).toBeTypeOf('function');
+    expect(core.fixPersianTypography('می رود')).toBe('می\u200Cرود');
+  });
+
+  it('re-exports the same function as @persian-web/core/typography', () => {
+    expect(core.fixPersianTypography).toBe(typography.fixPersianTypography);
   });
 });
