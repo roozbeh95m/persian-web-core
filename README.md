@@ -221,12 +221,14 @@ Husky runs typecheck, lint, and format checks on commit, and commitlint on the c
 
 [MIT](./LICENSE)
 
+See [CHANGELOG.md](./CHANGELOG.md) for release notes.
+
 ## Roadmap
 
-Current version is `0.0.0` (pre-1.0). Planned work, in priority order:
+Current version is **`0.1.0`** (first public MVP; still pre-1.0). Planned work, in priority order:
 
-1. **API freeze toward `1.0.0`** — stabilize option names, result unions, and subpath exports; document any breaking changes in a changelog before the major bump.
-2. **Publishable package hygiene** — changelog, release automation, and verified npm publish of the current surface.
+1. **API freeze toward `1.0.0`** — stabilize option names, result unions, and subpath exports; document breaking changes in [CHANGELOG.md](./CHANGELOG.md) before the major bump.
+2. **Release automation** — enable live npm publish (trusted publishing / `NPM_TOKEN`) once the first publish is verified; keep CI green on every release tag.
 3. **Phone coverage maintenance** — keep Iranian mobile prefix ranges aligned with allocations; evaluate optional landline helpers as a separate, explicitly scoped API if needed.
 4. **Intl compatibility notes** — document known output differences across Node and major browsers for currency/number/relative-time assertions.
 5. **Docs site (optional)** — if the Markdown tree outgrows GitHub browsing, generate a static docs site from `docs/` without changing the library API.
