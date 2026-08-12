@@ -37,7 +37,7 @@ normalizePersian(${JSON.stringify(input)}, {
     <PlaygroundLayout
       title="Normalize"
       titleFa="نرمال‌سازی"
-      description="یکسان‌سازی حروف فارسی، پاک‌سازی ZWNJ، و تبدیل اختیاری ارقام."
+      description="یکسان‌سازی حروف فارسی/عربی، پاک‌سازی فاصله مجازی، و تبدیل اختیاری ارقام."
       importPath="@persian-web/core/normalize"
       controls={
         <>
@@ -48,6 +48,29 @@ normalizePersian(${JSON.stringify(input)}, {
               dir="auto"
             />
           </Field>
+          <div className="badge-row">
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => setInput(fixtures.normalize)}
+            >
+              ی/ک عربی
+            </button>
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => setInput('مِنْ متنِ عربی ١٢٣')}
+            >
+              اعراب + ارقام
+            </button>
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => setInput('سلام   دنیا\u200C\u200C')}
+            >
+              فاصله اضافه
+            </button>
+          </div>
           <div className="options-grid">
             <Field label="digits">
               <select
@@ -84,7 +107,7 @@ normalizePersian(${JSON.stringify(input)}, {
       }
       output={<OutputBlock label="normalizePersian" value={output} />}
       snippet={snippet}
-      note="اصلاح ی/ک و پاک‌سازی پایه ZWNJ همیشه اعمال می‌شود."
+      note="اصلاح ی→ی و ك→ک و پاک‌سازی پایه ZWNJ همیشه اعمال می‌شود. گزینه‌ها برای ارقام، اعراب و فاصله‌های سفید اختیاری‌اند."
     />
   );
 }

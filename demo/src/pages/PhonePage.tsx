@@ -33,8 +33,12 @@ export function PhonePage() {
   formatIranianPhone,
 } from '@persian-web/core/phone';
 
-isValidIranianPhone(${JSON.stringify(input)}); // ${valid}
-normalizePhone(${JSON.stringify(input)}); // ${JSON.stringify(normalized)}
+isValidIranianPhone(${JSON.stringify(input)});
+// ${valid}
+
+normalizePhone(${JSON.stringify(input)});
+// ${JSON.stringify(normalized)}
+
 formatIranianPhone(${JSON.stringify(input)}, {
   format: '${format}',
   digits: '${digits}',
@@ -45,7 +49,7 @@ formatIranianPhone(${JSON.stringify(input)}, {
     <PlaygroundLayout
       title="Phone"
       titleFa="تلفن"
-      description="نرمال‌سازی، اعتبارسنجی و قالب‌بندی موبایل ایران."
+      description="نرمال‌سازی، اعتبارسنجی و قالب‌بندی موبایل ایران (نه تلفن ثابت)."
       importPath="@persian-web/core/phone"
       controls={
         <>
@@ -55,8 +59,39 @@ formatIranianPhone(${JSON.stringify(input)}, {
               onChange={(event) => setInput(event.target.value)}
               dir="ltr"
               style={{ textAlign: 'left' }}
+              inputMode="tel"
             />
           </Field>
+          <div className="badge-row">
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => setInput('09121234567')}
+            >
+              ۰۹۱۲…
+            </button>
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => setInput('+98 912 123 4567')}
+            >
+              +98…
+            </button>
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => setInput(fixtures.phone)}
+            >
+              ارقام فارسی
+            </button>
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => setInput(fixtures.phoneInvalid)}
+            >
+              ثابت (نامعتبر)
+            </button>
+          </div>
           <div className="options-grid">
             <Field label="format">
               <select
@@ -90,11 +125,18 @@ formatIranianPhone(${JSON.stringify(input)}, {
               isValidIranianPhone: {String(valid)}
             </span>
           </div>
-          <OutputBlock label="normalizePhone" value={normalized ?? 'null'} />
-          <OutputBlock label="formatIranianPhone" value={formatted ?? 'null'} />
+          <OutputBlock
+            label="normalizePhone (E.164)"
+            value={normalized ?? 'null — شماره موبایل معتبر نیست'}
+          />
+          <OutputBlock
+            label="formatIranianPhone"
+            value={formatted ?? 'null — شماره موبایل معتبر نیست'}
+          />
         </>
       }
       snippet={snippet}
+      note="فقط موبایل ایران پشتیبانی می‌شود. ورودی نامعتبر null برمی‌گرداند (نه throw). ارقام فارسی در ورودی پذیرفته می‌شوند."
     />
   );
 }

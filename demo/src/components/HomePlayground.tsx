@@ -1,22 +1,39 @@
 import { useMemo, useState } from 'react';
 
-import { formatJalali, toJalali } from '@persian-web/core/date';
+import { formatJalali, relativeTime, toJalali } from '@persian-web/core/date';
 import { toEnglishDigits, toPersianDigits } from '@persian-web/core/digits';
 import { getTextDirection, isRTL } from '@persian-web/core/direction';
+import { formatToman } from '@persian-web/core/currency';
 import { normalizePersian } from '@persian-web/core/normalize';
+import {
+  formatIranianPhone,
+  isValidIranianPhone,
+  normalizePhone,
+} from '@persian-web/core/phone';
+import { includesPersian } from '@persian-web/core/search';
 
 import { fixtures } from '../examples/fixtures';
 import { CodeBlock } from './CodeBlock';
 import { Field } from './Field';
 import { OutputBlock } from './OutputBlock';
 
-type PlayTab = 'digits' | 'normalize' | 'direction' | 'date';
+type PlayTab =
+  | 'digits'
+  | 'normalize'
+  | 'direction'
+  | 'date'
+  | 'search'
+  | 'phone'
+  | 'currency';
 
 const TABS: { id: PlayTab; label: string; labelFa: string }[] = [
   { id: 'digits', label: 'Digits', labelFa: 'ارقام' },
   { id: 'normalize', label: 'Normalize', labelFa: 'نرمال‌سازی' },
   { id: 'direction', label: 'Direction', labelFa: 'جهت' },
   { id: 'date', label: 'Jalali', labelFa: 'جلالی' },
+  { id: 'search', label: 'Search', labelFa: 'جستجو' },
+  { id: 'phone', label: 'Phone', labelFa: 'تلفن' },
+  { id: 'currency', label: 'Currency', labelFa: 'پول' },
 ];
 
 export function HomePlayground() {
@@ -27,6 +44,9 @@ export function HomePlayground() {
   const [gy, setGy] = useState('2024');
   const [gm, setGm] = useState('3');
   const [gd, setGd] = useState('20');
+  const [searchQuery, setSearchQuery] = useState(fixtures.searchNeedle);
+  const [phoneInput, setPhoneInput] = useState(fixtures.phone);
+  const [currencyValue, setCurrencyValue] = useState(String(fixtures.currency));
 
   const persianDigits = useMemo(
     () => toPersianDigits(digitsInput),
@@ -70,6 +90,53 @@ export function HomePlayground() {
     }
     return formatJalali(jalali, { digits: 'persian', pattern: 'YYYY/MM/DD' });
   }, [jalali]);
+
+  const relativeSample = useMemo(() => {
+    const now = new Date('2024-06-15T12:00:00Z');
+    return relativeTime(new Date(now.getTime() - 3 * 60_000), {
+      now,
+      digits: 'persian',
+    });
+  }, []);
+
+  const searchHits = useMemo(
+    () =>
+      fixtures.searchCatalog.filter((item) =>
+        includesPersian(item, searchQuery),
+      ),
+    [searchQuery],
+  );
+
+  const phoneValid = useMemo(
+    () => isValidIranianPhone(phoneInput),
+    [phoneInput],
+  );
+  const phoneNormalized = useMemo(
+    () => normalizePhone(phoneInput),
+    [phoneInput],
+  );
+  const phoneFormatted = useMemo(
+    () =>
+      formatIranianPhone(phoneInput, {
+        format: 'national',
+        digits: 'persian',
+      }),
+    [phoneInput],
+  );
+
+  const currencyNumeric = Number(currencyValue);
+  const currencyValid =
+    currencyValue.trim() !== '' && Number.isFinite(currencyNumeric);
+  const toman = useMemo(
+    () =>
+      currencyValid
+        ? formatToman(currencyNumeric, {
+            locale: 'fa-IR',
+            digits: 'persian',
+          })
+        : 'عدد نامعتبر',
+    [currencyNumeric, currencyValid],
+  );
 
   let controls = null;
   let output = null;
@@ -170,15 +237,106 @@ isRTL(${JSON.stringify(directionInput)});
           value={jalali ? JSON.stringify(jalali) : 'تاریخ نامعتبر'}
         />
         <OutputBlock label="formatJalali" value={jalaliFormatted} />
+        <OutputBlock label="relativeTime (نمونه)" value={relativeSample} />
       </>
     );
-    snippet = `import { toJalali, formatJalali } from '@persian-web/core/date';
+    snippet = `import { toJalali, formatJalali, relativeTime } from '@persian-web/core/date';
 
 const jalali = toJalali(${gYear}, ${gMonth}, ${gDay});
 // ${JSON.stringify(jalali)}
 
 formatJalali(jalali, { digits: 'persian', pattern: 'YYYY/MM/DD' });
 // ${JSON.stringify(jalaliFormatted)}`;
+  }
+
+  if (tab === 'search') {
+    controls = (
+      <Field label="جستجو در کاتالوگ">
+        <input
+          value={searchQuery}
+          onChange={(event) => setSearchQuery(event.target.value)}
+          dir="auto"
+        />
+      </Field>
+    );
+    output = (
+      <>
+        <div className="badge-row">
+          <span className="badge">
+            includesPersian: {searchHits.length}/{fixtures.searchCatalog.length}
+          </span>
+        </div>
+        <OutputBlock
+          label="نتایج"
+          value={
+            searchHits.length > 0 ? searchHits.join('\n') : 'نتیجه‌ای یافت نشد'
+          }
+        />
+      </>
+    );
+    snippet = `import { includesPersian } from '@persian-web/core/search';
+
+catalog.filter((item) => includesPersian(item, ${JSON.stringify(searchQuery)}));
+// ${JSON.stringify(searchHits)}`;
+  }
+
+  if (tab === 'phone') {
+    controls = (
+      <Field label="شماره موبایل">
+        <input
+          value={phoneInput}
+          onChange={(event) => setPhoneInput(event.target.value)}
+          dir="ltr"
+          style={{ textAlign: 'left' }}
+        />
+      </Field>
+    );
+    output = (
+      <>
+        <div className="badge-row">
+          <span className={`badge${phoneValid ? ' badge--ok' : ' badge--bad'}`}>
+            isValidIranianPhone: {String(phoneValid)}
+          </span>
+        </div>
+        <OutputBlock label="normalizePhone" value={phoneNormalized ?? 'null'} />
+        <OutputBlock
+          label="formatIranianPhone"
+          value={phoneFormatted ?? 'null'}
+        />
+      </>
+    );
+    snippet = `import {
+  isValidIranianPhone,
+  normalizePhone,
+  formatIranianPhone,
+} from '@persian-web/core/phone';
+
+isValidIranianPhone(${JSON.stringify(phoneInput)}); // ${phoneValid}
+normalizePhone(${JSON.stringify(phoneInput)}); // ${JSON.stringify(phoneNormalized)}
+formatIranianPhone(${JSON.stringify(phoneInput)}, { digits: 'persian' });
+// ${JSON.stringify(phoneFormatted)}`;
+  }
+
+  if (tab === 'currency') {
+    controls = (
+      <Field label="مبلغ (تومان)">
+        <input
+          value={currencyValue}
+          onChange={(event) => setCurrencyValue(event.target.value)}
+          inputMode="decimal"
+          dir="ltr"
+          style={{ textAlign: 'left' }}
+        />
+      </Field>
+    );
+    output = <OutputBlock label="formatToman" value={toman} />;
+    snippet = `import { formatToman } from '@persian-web/core/currency';
+
+formatToman(${currencyValid ? currencyNumeric : 0}, {
+  locale: 'fa-IR',
+  digits: 'persian',
+});
+// ${JSON.stringify(toman)}`;
   }
 
   return (

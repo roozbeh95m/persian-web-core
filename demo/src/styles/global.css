@@ -153,6 +153,12 @@ code,
   background: var(--bg-muted);
 }
 
+.icon-button.is-active {
+  border-color: var(--accent-strong);
+  background: color-mix(in srgb, var(--accent) 14%, var(--bg-elevated));
+  color: var(--accent-strong);
+}
+
 .sidebar {
   border-bottom: 1px solid var(--border);
   background: var(--bg-elevated);

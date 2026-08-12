@@ -18,17 +18,29 @@ export function DirectionPage() {
   const rtl = useMemo(() => isRTL(input), [input]);
   const mixed = useMemo(() => isMixedDirection(input), [input]);
 
-  const snippet = `import { getTextDirection, isRTL, isMixedDirection } from '@persian-web/core/direction';
+  const previewDir =
+    direction === 'ltr' ? 'ltr' : direction === 'rtl' ? 'rtl' : 'auto';
 
-getTextDirection(${JSON.stringify(input)}); // ${JSON.stringify(direction)}
-isRTL(${JSON.stringify(input)}); // ${rtl}
-isMixedDirection(${JSON.stringify(input)}); // ${mixed}`;
+  const snippet = `import {
+  getTextDirection,
+  isRTL,
+  isMixedDirection,
+} from '@persian-web/core/direction';
+
+getTextDirection(${JSON.stringify(input)});
+// ${JSON.stringify(direction)}
+
+isRTL(${JSON.stringify(input)});
+// ${rtl}
+
+isMixedDirection(${JSON.stringify(input)});
+// ${mixed}`;
 
   return (
     <PlaygroundLayout
       title="Direction"
       titleFa="جهت متن"
-      description="تشخیص جهت قوی کاراکترها برای تنظیم dir در UI."
+      description="تشخیص rtl / ltr / mixed / neutral از کاراکترهای قوی — برای تنظیم dir در UI."
       importPath="@persian-web/core/direction"
       controls={
         <>
@@ -45,21 +57,28 @@ isMixedDirection(${JSON.stringify(input)}); // ${mixed}`;
               className="icon-button"
               onClick={() => setInput(fixtures.directionRtl)}
             >
-              نمونه RTL
+              RTL
             </button>
             <button
               type="button"
               className="icon-button"
               onClick={() => setInput(fixtures.directionLtr)}
             >
-              نمونه LTR
+              LTR
             </button>
             <button
               type="button"
               className="icon-button"
               onClick={() => setInput(fixtures.directionMixed)}
             >
-              نمونه mixed
+              mixed
+            </button>
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => setInput(fixtures.directionNeutral)}
+            >
+              neutral
             </button>
           </div>
         </>
@@ -67,24 +86,22 @@ isMixedDirection(${JSON.stringify(input)}); // ${mixed}`;
       output={
         <>
           <div className="badge-row">
-            <span className="badge">dir: {direction}</span>
+            <span className="badge">getTextDirection: {direction}</span>
             <span className={`badge${rtl ? ' badge--ok' : ''}`}>
               isRTL: {String(rtl)}
             </span>
             <span className={`badge${mixed ? ' badge--bad' : ''}`}>
-              isMixed: {String(mixed)}
+              isMixedDirection: {String(mixed)}
             </span>
           </div>
-          <div
-            className="dir-preview"
-            dir={direction === 'ltr' ? 'ltr' : 'rtl'}
-          >
+          <div className="dir-preview" dir={previewDir}>
             {input || '—'}
           </div>
-          <OutputBlock label="getTextDirection" value={direction} />
+          <OutputBlock label="suggested dir attribute" value={previewDir} />
         </>
       }
       snippet={snippet}
+      note="isRTL فقط وقتی true است که متن خالص RTL باشد (نه mixed). برای UI معمولاً getTextDirection را به attribute dir نگاشت کنید."
     />
   );
 }

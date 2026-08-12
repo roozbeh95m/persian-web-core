@@ -25,16 +25,41 @@ toEnglishDigits(${JSON.stringify(input)});
     <PlaygroundLayout
       title="Digits"
       titleFa="ارقام"
-      description="تبدیل ارقام بین انگلیسی، فارسی و عربی-هندی."
+      description="تبدیل ارقام انگلیسی، فارسی و عربی-هندی به یکدیگر بدون تغییر بقیه متن."
       importPath="@persian-web/core/digits"
       controls={
-        <Field label="متن ورودی">
-          <textarea
-            value={input}
-            onChange={(event) => setInput(event.target.value)}
-            dir="auto"
-          />
-        </Field>
+        <>
+          <Field label="متن یا عدد">
+            <textarea
+              value={input}
+              onChange={(event) => setInput(event.target.value)}
+              dir="auto"
+            />
+          </Field>
+          <div className="badge-row">
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => setInput('قیمت: 2500 تومان')}
+            >
+              انگلیسی
+            </button>
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => setInput('قیمت: ۲۵۰۰ تومان')}
+            >
+              فارسی
+            </button>
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => setInput('عربي: ٠١٢٣٤٥٦٧٨٩')}
+            >
+              عربی-هندی
+            </button>
+          </div>
+        </>
       }
       output={
         <>
@@ -43,6 +68,7 @@ toEnglishDigits(${JSON.stringify(input)});
         </>
       }
       snippet={snippet}
+      note="هر دو تابع string یا number می‌پذیرند. ارقام عربی-هندی (٠–٩) نیز پشتیبانی می‌شوند؛ بقیه کاراکترها دست‌نخورده می‌مانند."
     />
   );
 }

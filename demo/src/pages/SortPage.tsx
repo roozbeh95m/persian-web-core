@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 
 import type { SortPersianDirection } from '@persian-web/core/sort';
-import { sortPersian } from '@persian-web/core/sort';
+import { createPersianCollator, sortPersian } from '@persian-web/core/sort';
 
 import { Field } from '../components/Field';
 import { OutputBlock } from '../components/OutputBlock';
@@ -22,16 +22,21 @@ export function SortPage() {
     [lines],
   );
 
-  const sorted = useMemo(
-    () => sortPersian(items, { direction, numeric }),
-    [direction, items, numeric],
-  );
+  const sorted = useMemo(() => {
+    const collator = createPersianCollator({ numeric });
+    // When reusing a collator, do not pass numeric/locale again.
+    return sortPersian(items, { direction, collator });
+  }, [direction, items, numeric]);
 
-  const snippet = `import { sortPersian } from '@persian-web/core/sort';
+  const snippet = `import { createPersianCollator, sortPersian } from '@persian-web/core/sort';
 
-sortPersian(${JSON.stringify(items)}, {
+const items = ${JSON.stringify(items)};
+
+const collator = createPersianCollator({ numeric: ${numeric} });
+
+sortPersian(items, {
   direction: '${direction}',
-  numeric: ${numeric},
+  collator, // reuse; do not also pass numeric/locale
 });
 // ${JSON.stringify(sorted)}`;
 
@@ -39,7 +44,7 @@ sortPersian(${JSON.stringify(items)}, {
     <PlaygroundLayout
       title="Sort"
       titleFa="مرتب‌سازی"
-      description="مرتب‌سازی لیست فارسی با قوانین Collator و ارقام عددی."
+      description="مرتب‌سازی فارسی با Collator — حساس به ی/ک و ارقام عددی."
       importPath="@persian-web/core/sort"
       controls={
         <>
@@ -48,8 +53,25 @@ sortPersian(${JSON.stringify(items)}, {
               value={lines}
               onChange={(event) => setLines(event.target.value)}
               dir="auto"
+              rows={8}
             />
           </Field>
+          <div className="badge-row">
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => setLines(fixtures.sortLines.join('\n'))}
+            >
+              نمونه پیش‌فرض
+            </button>
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => setLines(['۱۰', '2', '۱', '20'].join('\n'))}
+            >
+              فقط اعداد
+            </button>
+          </div>
           <div className="options-grid">
             <Field label="direction">
               <select
@@ -73,8 +95,20 @@ sortPersian(${JSON.stringify(items)}, {
           </div>
         </>
       }
-      output={<OutputBlock label="sortPersian" value={sorted.join('\n')} />}
+      output={
+        <>
+          <OutputBlock
+            label="قبل"
+            value={items.length > 0 ? items.join('\n') : 'لیست خالی'}
+          />
+          <OutputBlock
+            label="sortPersian"
+            value={sorted.length > 0 ? sorted.join('\n') : '—'}
+          />
+        </>
+      }
       snippet={snippet}
+      note="createPersianCollator را برای مرتب‌سازی‌های مکرر بسازید و در options.collator پاس دهید. با numeric: true مقدار «۲» قبل از «۱۲» قرار می‌گیرد."
     />
   );
 }

@@ -17,28 +17,50 @@ export function NumbersPage() {
   const [digits, setDigits] = useState<FormatNumberDigits | ''>('persian');
   const [notation, setNotation] = useState<FormatNumberNotation>('standard');
   const [useGrouping, setUseGrouping] = useState(true);
+  const [precision, setPrecision] = useState('');
 
   const numeric = Number(value);
-  const valid = Number.isFinite(numeric);
+  const valid = value.trim() !== '' && Number.isFinite(numeric);
+  const precisionNum = precision === '' ? undefined : Number(precision);
+  const precisionValid =
+    precisionNum === undefined ||
+    (Number.isInteger(precisionNum) && precisionNum >= 0 && precisionNum <= 20);
 
   const output = useMemo(() => {
     if (!valid) {
-      return 'عدد نامعتبر';
+      return 'عدد نامعتبر — یک مقدار finite وارد کنید';
+    }
+    if (!precisionValid) {
+      return 'precision باید عدد صحیح بین ۰ تا ۲۰ باشد';
     }
     return formatNumber(numeric, {
       locale,
       ...(digits ? { digits } : {}),
       notation,
       useGrouping,
+      ...(precisionNum !== undefined ? { precision: precisionNum } : {}),
     });
-  }, [digits, locale, notation, numeric, useGrouping, valid]);
+  }, [
+    digits,
+    locale,
+    notation,
+    numeric,
+    precisionNum,
+    precisionValid,
+    useGrouping,
+    valid,
+  ]);
 
   const snippet = `import { formatNumber } from '@persian-web/core/format';
 
-formatNumber(${valid ? numeric : 0}, {
+formatNumber(${valid ? numeric : '/* NaN */'}, {
   locale: '${locale}',${digits ? `\n  digits: '${digits}',` : ''}
   notation: '${notation}',
-  useGrouping: ${useGrouping},
+  useGrouping: ${useGrouping},${
+    precisionNum !== undefined && precisionValid
+      ? `\n  precision: ${precisionNum},`
+      : ''
+  }
 });
 // ${JSON.stringify(output)}`;
 
@@ -46,7 +68,7 @@ formatNumber(${valid ? numeric : 0}, {
     <PlaygroundLayout
       title="Numbers"
       titleFa="اعداد"
-      description="قالب‌بندی اعداد با Intl و تبدیل اختیاری ارقام."
+      description="قالب‌بندی اعداد با Intl؛ پشتیبانی از locale فارسی، ارقام فارسی و نماد فشرده."
       importPath="@persian-web/core/format"
       controls={
         <>
@@ -55,8 +77,33 @@ formatNumber(${valid ? numeric : 0}, {
               value={value}
               onChange={(event) => setValue(event.target.value)}
               inputMode="decimal"
+              dir="ltr"
+              style={{ textAlign: 'left' }}
             />
           </Field>
+          <div className="badge-row">
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => setValue('1250000')}
+            >
+              1,250,000
+            </button>
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => setValue('-1234.5')}
+            >
+              منفی اعشاری
+            </button>
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => setValue('not-a-number')}
+            >
+              ورودی نامعتبر
+            </button>
+          </div>
           <div className="options-grid">
             <Field label="locale">
               <select
@@ -90,6 +137,16 @@ formatNumber(${valid ? numeric : 0}, {
                 <option value="compact">compact</option>
               </select>
             </Field>
+            <Field label="precision">
+              <input
+                value={precision}
+                onChange={(event) => setPrecision(event.target.value)}
+                placeholder="اختیاری"
+                inputMode="numeric"
+                dir="ltr"
+                style={{ textAlign: 'left' }}
+              />
+            </Field>
             <label className="check">
               <input
                 type="checkbox"
@@ -103,6 +160,7 @@ formatNumber(${valid ? numeric : 0}, {
       }
       output={<OutputBlock label="formatNumber" value={output} />}
       snippet={snippet}
+      note="برای نمایش مبلغ ریال/تومان از @persian-web/core/currency استفاده کنید؛ formatNumber فقط قالب عدد است."
     />
   );
 }

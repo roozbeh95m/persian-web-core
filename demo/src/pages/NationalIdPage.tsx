@@ -10,15 +10,32 @@ import { OutputBlock } from '../components/OutputBlock';
 import { PlaygroundLayout } from '../components/PlaygroundLayout';
 import { fixtures } from '../examples/fixtures';
 
+const REASON_FA: Record<string, string> = {
+  invalid_length: 'طول باید ۱۰ رقم باشد',
+  invalid_format: 'فقط رقم مجاز است',
+  invalid_checksum: 'رقم کنترل (checksum) نادرست است',
+  invalid_repeated_digits: 'همه ارقام یکسان مجاز نیست',
+};
+
 export function NationalIdPage() {
   const [input, setInput] = useState(fixtures.nationalId);
 
   const valid = useMemo(() => isValidNationalId(input), [input]);
   const result = useMemo(() => validateNationalId(input), [input]);
 
-  const snippet = `import { isValidNationalId, validateNationalId } from '@persian-web/core/national-id';
+  const reasonLabel =
+    !result.valid && result.reason
+      ? (REASON_FA[result.reason] ?? result.reason)
+      : null;
 
-isValidNationalId(${JSON.stringify(input)}); // ${valid}
+  const snippet = `import {
+  isValidNationalId,
+  validateNationalId,
+} from '@persian-web/core/national-id';
+
+isValidNationalId(${JSON.stringify(input)});
+// ${valid}
+
 validateNationalId(${JSON.stringify(input)});
 // ${JSON.stringify(result)}`;
 
@@ -26,18 +43,51 @@ validateNationalId(${JSON.stringify(input)});
     <PlaygroundLayout
       title="National ID"
       titleFa="کد ملی"
-      description="اعتبارسنجی کد ملی با جزئیات دلیل نامعتبر بودن."
+      description="اعتبارسنجی کد ملی با checksum و دلیل مشخص برای ورودی نامعتبر."
       importPath="@persian-web/core/national-id"
       controls={
-        <Field label="کد ملی">
-          <input
-            value={input}
-            onChange={(event) => setInput(event.target.value)}
-            dir="ltr"
-            style={{ textAlign: 'left' }}
-            inputMode="numeric"
-          />
-        </Field>
+        <>
+          <Field label="کد ملی">
+            <input
+              value={input}
+              onChange={(event) => setInput(event.target.value)}
+              dir="ltr"
+              style={{ textAlign: 'left' }}
+              inputMode="numeric"
+              maxLength={12}
+            />
+          </Field>
+          <div className="badge-row">
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => setInput(fixtures.nationalId)}
+            >
+              معتبر
+            </button>
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => setInput(fixtures.nationalIdInvalid)}
+            >
+              checksum اشتباه
+            </button>
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => setInput('0000000000')}
+            >
+              ارقام تکراری
+            </button>
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => setInput('۱۲۳')}
+            >
+              کوتاه / فارسی
+            </button>
+          </div>
+        </>
       }
       output={
         <>
@@ -45,6 +95,9 @@ validateNationalId(${JSON.stringify(input)});
             <span className={`badge${valid ? ' badge--ok' : ' badge--bad'}`}>
               isValidNationalId: {String(valid)}
             </span>
+            {reasonLabel ? (
+              <span className="badge badge--bad">{reasonLabel}</span>
+            ) : null}
           </div>
           <OutputBlock
             label="validateNationalId"
@@ -53,6 +106,7 @@ validateNationalId(${JSON.stringify(input)});
         </>
       }
       snippet={snippet}
+      note="برای فرم‌ها validateNationalId را ترجیح دهید تا reason را به کاربر نشان دهید. isValidNationalId فقط boolean برمی‌گرداند."
     />
   );
 }

@@ -25,7 +25,7 @@ export function CurrencyPage() {
     useState<CurrencyDisplay>('symbol');
 
   const numeric = Number(value);
-  const valid = Number.isFinite(numeric);
+  const valid = value.trim() !== '' && Number.isFinite(numeric);
 
   const options = useMemo(
     () => ({
@@ -38,7 +38,7 @@ export function CurrencyPage() {
 
   const formatted = useMemo(() => {
     if (!valid) {
-      return 'عدد نامعتبر';
+      return 'عدد نامعتبر — یک مبلغ finite وارد کنید';
     }
     return formatCurrency(numeric, { currency, ...options });
   }, [currency, numeric, options, valid]);
@@ -52,20 +52,34 @@ export function CurrencyPage() {
     [numeric, options, valid],
   );
 
-  const snippet = `import { formatCurrency, formatToman, formatRial } from '@persian-web/core/currency';
+  const snippet = `import {
+  formatCurrency,
+  formatToman,
+  formatRial,
+} from '@persian-web/core/currency';
 
 formatCurrency(${valid ? numeric : 0}, {
   currency: '${currency}',
   locale: '${locale}',${digits ? `\n  digits: '${digits}',` : ''}
   currencyDisplay: '${currencyDisplay}',
 });
-// ${JSON.stringify(formatted)}`;
+// ${JSON.stringify(formatted)}
+
+formatToman(${valid ? numeric : 0}, { locale: '${locale}'${
+    digits ? `, digits: '${digits}'` : ''
+  } });
+// ${JSON.stringify(toman)}
+
+formatRial(${valid ? numeric : 0}, { locale: '${locale}'${
+    digits ? `, digits: '${digits}'` : ''
+  } });
+// ${JSON.stringify(rial)}`;
 
   return (
     <PlaygroundLayout
       title="Currency"
       titleFa="واحد پول"
-      description="نمایش تومان و ریال بدون تبدیل خودکار IRR↔IRT."
+      description="نمایش تومان، ریال و ارزهای رایج — بدون تبدیل خودکار IRR↔IRT."
       importPath="@persian-web/core/currency"
       controls={
         <>
@@ -74,8 +88,39 @@ formatCurrency(${valid ? numeric : 0}, {
               value={value}
               onChange={(event) => setValue(event.target.value)}
               inputMode="decimal"
+              dir="ltr"
+              style={{ textAlign: 'left' }}
             />
           </Field>
+          <div className="badge-row">
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => {
+                setValue('1250000');
+                setCurrency('IRT');
+              }}
+            >
+              تومان
+            </button>
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => {
+                setValue('12500000');
+                setCurrency('IRR');
+              }}
+            >
+              ریال
+            </button>
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => setValue('abc')}
+            >
+              ورودی نامعتبر
+            </button>
+          </div>
           <div className="options-grid">
             <Field label="currency">
               <select
@@ -135,6 +180,7 @@ formatCurrency(${valid ? numeric : 0}, {
         </>
       }
       snippet={snippet}
+      note="مبلغ را همان‌طور که دارید پاس دهید؛ کتابخانه ریال را به تومان تبدیل نمی‌کند. formatToman ≡ currency: 'IRT' و formatRial ≡ currency: 'IRR'."
     />
   );
 }
