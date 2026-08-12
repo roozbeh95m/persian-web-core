@@ -54,12 +54,88 @@ toEnglishDigits(''); // ''
 - Inputs are never mutated. When no digit conversion is needed, the original string is returned.
 - Only digit code points are mapped; punctuation, letters, and whitespace are left as-is.
 
+## Normalize
+
+Stabilize Persian orthography without surprising edits. Always fixes Yeh/Kaf variants and cleans ZWNJ; digit, diacritic, and whitespace behavior are opt-in.
+
+### `normalizePersian(text, options?)`
+
+```ts
+import { normalizePersian } from '@persian-web/core';
+// or: import { normalizePersian } from '@persian-web/core/normalize';
+
+normalizePersian('كي'); // 'کی'
+normalizePersian('خانۀ ما'); // 'خانهٔ ما'
+normalizePersian('١٢٣', { digits: 'persian' }); // '۱۲۳'
+normalizePersian('مِنْ', { removeDiacritics: true }); // 'من'
+normalizePersian('  سلام   دنیا  ', { normalizeWhitespace: true }); // 'سلام دنیا'
+```
+
+**Always applied**
+
+| Input                            | Result                                                     |
+| -------------------------------- | ---------------------------------------------------------- |
+| Arabic Yeh `ي` (U+064A)          | Persian Yeh `ی` (U+06CC)                                   |
+| Alef Maksura `ى` (U+0649)        | Persian Yeh `ی` (U+06CC)                                   |
+| Arabic Kaf `ك` (U+0643)          | Persian Kaf `ک` (U+06A9)                                   |
+| Heh with Yeh above `ۀ` (U+06C0)  | `هٔ` (heh + hamza above), or `ه` if diacritics are removed |
+| ZWNJ runs / edge / next to space | collapsed or dropped; meaningful joins like `می‌روم` kept  |
+
+**Invariant:** for any fixed options,
+`normalizePersian(normalizePersian(input, options), options) === normalizePersian(input, options)`.
+
+### Options
+
+All options default to preserving content beyond the always-applied character/ZWNJ rules.
+
+#### `digits?: 'persian' | 'english' | 'preserve'`
+
+Controls digit script conversion. Default: `'preserve'`.
+
+| Value        | Behavior                                                             |
+| ------------ | -------------------------------------------------------------------- |
+| `'preserve'` | Leave English, Persian, and Arabic-Indic digits unchanged (default). |
+| `'persian'`  | Map English and Arabic-Indic digits to Persian (`۰–۹`).              |
+| `'english'`  | Map Persian and Arabic-Indic digits to English (`0–9`).              |
+
+```ts
+normalizePersian('1٢۳'); // '1٢۳'
+normalizePersian('1٢۳', { digits: 'persian' }); // '۱۲۳'
+normalizePersian('1٢۳', { digits: 'english' }); // '123'
+```
+
+#### `removeDiacritics?: boolean`
+
+When `true`, strip Arabic combining marks (tashkeel / harakat), including the hamza above in `هٔ`. Base letters remain. Default: `false`.
+
+```ts
+normalizePersian('كِتَابٌ'); // 'کِتَابٌ'
+normalizePersian('كِتَابٌ', { removeDiacritics: true }); // 'کتاب'
+normalizePersian('خانهٔ ما', { removeDiacritics: true }); // 'خانه ما'
+```
+
+#### `normalizeWhitespace?: boolean`
+
+When `true`, trim the string and collapse every internal run of whitespace (spaces, tabs, newlines, NBSP, etc.) to a single ASCII space (`U+0020`). ZWNJ is not treated as whitespace. Default: `false`.
+
+```ts
+normalizePersian('  سلام\t\tدنیا  '); // unchanged
+normalizePersian('  سلام\t\tدنیا  ', { normalizeWhitespace: true }); // 'سلام دنیا'
+```
+
+### Notes
+
+- Punctuation, Latin text, and unrelated Arabic letters (for example `أ`, `إ`, `ؤ`, `ة`) are left as-is.
+- Inputs are never mutated. When nothing changes, the original string reference is returned.
+- Search / stemming / tokenizing are out of scope for this module.
+
 ## Entry points
 
-| Import                     | Exports                              |
-| -------------------------- | ------------------------------------ |
-| `@persian-web/core`        | Full public API (currently digits)   |
-| `@persian-web/core/digits` | `toPersianDigits`, `toEnglishDigits` |
+| Import                        | Exports                                                             |
+| ----------------------------- | ------------------------------------------------------------------- |
+| `@persian-web/core`           | Full public API (digits + normalize)                                |
+| `@persian-web/core/digits`    | `toPersianDigits`, `toEnglishDigits`                                |
+| `@persian-web/core/normalize` | `normalizePersian`, `NormalizePersianOptions`, `DigitNormalization` |
 
 ## License
 

@@ -13,6 +13,10 @@
     "./digits": {
       "types": "./dist/digits/index.d.ts",
       "import": "./dist/digits/index.js"
+    },
+    "./normalize": {
+      "types": "./dist/normalize/index.d.ts",
+      "import": "./dist/normalize/index.js"
     }
   },
   "main": "./dist/index.js",

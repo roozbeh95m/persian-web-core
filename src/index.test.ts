@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import * as core from './index.js';
 import * as digits from './digits/index.js';
+import * as normalize from './normalize/index.js';
 
 describe('@persian-web/core', () => {
   it('exports digit converters from the root entry', () => {
@@ -14,5 +15,14 @@ describe('@persian-web/core', () => {
   it('re-exports the same functions as @persian-web/core/digits', () => {
     expect(core.toPersianDigits).toBe(digits.toPersianDigits);
     expect(core.toEnglishDigits).toBe(digits.toEnglishDigits);
+  });
+
+  it('exports normalizePersian from the root entry', () => {
+    expect(core.normalizePersian).toBeTypeOf('function');
+    expect(core.normalizePersian('كي')).toBe('کی');
+  });
+
+  it('re-exports the same function as @persian-web/core/normalize', () => {
+    expect(core.normalizePersian).toBe(normalize.normalizePersian);
   });
 });
