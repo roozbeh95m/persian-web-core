@@ -5,6 +5,7 @@ import * as currency from './currency/index.js';
 import * as digits from './digits/index.js';
 import * as format from './format/index.js';
 import * as normalize from './normalize/index.js';
+import * as phone from './phone/index.js';
 
 describe('@persian-web/core', () => {
   it('exports digit converters from the root entry', () => {
@@ -48,5 +49,18 @@ describe('@persian-web/core', () => {
     expect(core.formatCurrency).toBe(currency.formatCurrency);
     expect(core.formatToman).toBe(currency.formatToman);
     expect(core.formatRial).toBe(currency.formatRial);
+  });
+
+  it('exports phone helpers from the root entry', () => {
+    expect(core.normalizePhone).toBeTypeOf('function');
+    expect(core.isValidIranianPhone).toBeTypeOf('function');
+    expect(core.formatIranianPhone).toBeTypeOf('function');
+    expect(core.normalizePhone('09121234567')).toBe('+989121234567');
+  });
+
+  it('re-exports the same functions as @persian-web/core/phone', () => {
+    expect(core.normalizePhone).toBe(phone.normalizePhone);
+    expect(core.isValidIranianPhone).toBe(phone.isValidIranianPhone);
+    expect(core.formatIranianPhone).toBe(phone.formatIranianPhone);
   });
 });

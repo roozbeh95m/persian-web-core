@@ -31,10 +31,18 @@ describe('package exports and build layout', () => {
     });
   });
 
+  it('exposes the phone subpath export', () => {
+    expect(packageJson.exports['./phone']).toEqual({
+      types: './dist/phone/index.d.ts',
+      import: './dist/phone/index.js',
+    });
+  });
+
   it('includes format in the root export graph only via explicit re-exports', () => {
     const rootSource = readFileSync(join(packageRoot, 'src/index.ts'), 'utf8');
     expect(rootSource).toContain("from './format/index.js'");
     expect(rootSource).toContain("from './currency/index.js'");
+    expect(rootSource).toContain("from './phone/index.js'");
   });
 
   it('emits standalone format build artifacts', () => {
@@ -49,5 +57,12 @@ describe('package exports and build layout', () => {
     const currencySource = readFileSync(currencyEntry, 'utf8');
     expect(currencySource).toContain('formatCurrency');
     expect(currencySource).not.toContain('normalizePersian');
+  });
+
+  it('emits standalone phone build artifacts', () => {
+    const phoneEntry = join(packageRoot, 'dist/phone/index.js');
+    const phoneSource = readFileSync(phoneEntry, 'utf8');
+    expect(phoneSource).toContain('normalizePhone');
+    expect(phoneSource).not.toContain('normalizePersian');
   });
 });
