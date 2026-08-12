@@ -555,11 +555,11 @@ relativeTime(new Date('2024-06-29T12:00:00Z'), { now });
 // '۲ هفته بعد'
 ```
 
-| Option    | Type                     | Default       | Notes                                                                 |
-| --------- | ------------------------ | ------------- | --------------------------------------------------------------------- |
-| `digits`  | `'persian' \| 'english'` | `'persian'`   | Digit script after formatting                                         |
-| `now`     | `Date`                   | `new Date()`  | Reference instant (pin this in tests)                                 |
-| `numeric` | `'auto' \| 'always'`     | `'auto'`      | `'auto'` allows phrases like `دیروز` / `فردا`; `'always'` stays numeric |
+| Option    | Type                     | Default      | Notes                                                                   |
+| --------- | ------------------------ | ------------ | ----------------------------------------------------------------------- |
+| `digits`  | `'persian' \| 'english'` | `'persian'`  | Digit script after formatting                                           |
+| `now`     | `Date`                   | `new Date()` | Reference instant (pin this in tests)                                   |
+| `numeric` | `'auto' \| 'always'`     | `'auto'`     | `'auto'` allows phrases like `دیروز` / `فردا`; `'always'` stays numeric |
 
 **Time zone:** comparison uses absolute instants (`Date#getTime`). Civil time
 zones do not change the result. Invalid `date` or `options.now` throws
@@ -567,20 +567,20 @@ zones do not change the result. Invalid `date` or `options.now` throws
 
 ## Entry points
 
-| Import                          | Exports                                                                                                                         |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Import                          | Exports                                                                                                                        |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `@persian-web/core`             | Full public API (digits + normalize + format + currency + phone + national-id + search + sort + typography + date + direction) |
-| `@persian-web/core/digits`      | `toPersianDigits`, `toEnglishDigits`                                                                                            |
-| `@persian-web/core/normalize`   | `normalizePersian`, `NormalizePersianOptions`, `DigitNormalization`                                                             |
-| `@persian-web/core/typography`  | `fixPersianTypography`                                                                                                          |
-| `@persian-web/core/search`      | `normalizeForSearch`, `includesPersian`, `matchesPersian`                                                                       |
-| `@persian-web/core/sort`        | `createPersianCollator`, `sortPersian`, sort types                                                                              |
-| `@persian-web/core/format`      | `formatNumber`, `FormatNumberOptions`, `FormatNumberDigits`, `FormatNumberNotation`                                             |
-| `@persian-web/core/currency`    | `formatCurrency`, `formatToman`, `formatRial`, currency types                                                                   |
-| `@persian-web/core/phone`       | `normalizePhone`, `isValidIranianPhone`, `formatIranianPhone`, phone types                                                      |
-| `@persian-web/core/national-id` | `isValidNationalId`, `validateNationalId`, `NationalIdInvalidReason`, `ValidateNationalIdResult`                                |
-| `@persian-web/core/date`        | `toJalali`, `toGregorian`, `formatJalali`, `relativeTime`, date types                                                           |
-| `@persian-web/core/direction`   | `getTextDirection`, `isRTL`, `isMixedDirection`, `TextDirection`                                                                |
+| `@persian-web/core/digits`      | `toPersianDigits`, `toEnglishDigits`                                                                                           |
+| `@persian-web/core/normalize`   | `normalizePersian`, `NormalizePersianOptions`, `DigitNormalization`                                                            |
+| `@persian-web/core/typography`  | `fixPersianTypography`                                                                                                         |
+| `@persian-web/core/search`      | `normalizeForSearch`, `includesPersian`, `matchesPersian`                                                                      |
+| `@persian-web/core/sort`        | `createPersianCollator`, `sortPersian`, sort types                                                                             |
+| `@persian-web/core/format`      | `formatNumber`, `FormatNumberOptions`, `FormatNumberDigits`, `FormatNumberNotation`                                            |
+| `@persian-web/core/currency`    | `formatCurrency`, `formatToman`, `formatRial`, currency types                                                                  |
+| `@persian-web/core/phone`       | `normalizePhone`, `isValidIranianPhone`, `formatIranianPhone`, phone types                                                     |
+| `@persian-web/core/national-id` | `isValidNationalId`, `validateNationalId`, `NationalIdInvalidReason`, `ValidateNationalIdResult`                               |
+| `@persian-web/core/date`        | `toJalali`, `toGregorian`, `formatJalali`, `relativeTime`, date types                                                          |
+| `@persian-web/core/direction`   | `getTextDirection`, `isRTL`, `isMixedDirection`, `TextDirection`                                                               |
 
 ## License
 

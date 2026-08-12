@@ -105,6 +105,38 @@ describe('fixPersianTypography', () => {
       expect(fixPersianTypography('(می رود)')).toBe(`(می${ZWNJ}رود)`);
     });
 
+    it('applies after remaining PREFIX_BOUNDARY characters', () => {
+      expect(fixPersianTypography('[می رود]')).toBe(`[می${ZWNJ}رود]`);
+      expect(fixPersianTypography('{می رود}')).toBe(`{می${ZWNJ}رود}`);
+      // Punctuation-space-after runs after verbal-prefix-zwnj, so a missing
+      // space after ،؛؟! is inserted once the prefix join is done.
+      expect(fixPersianTypography('،می رود')).toBe(`، می${ZWNJ}رود`);
+      expect(fixPersianTypography('؛می رود')).toBe(`؛ می${ZWNJ}رود`);
+      expect(fixPersianTypography('؟می رود')).toBe(`؟ می${ZWNJ}رود`);
+      expect(fixPersianTypography('!می رود')).toBe(`! می${ZWNJ}رود`);
+      expect(fixPersianTypography('"می رود"')).toBe(`«می${ZWNJ}رود»`);
+    });
+
+    it('joins verbal prefixes separated by NBSP', () => {
+      expect(fixPersianTypography('می\u00A0رود')).toBe(`می${ZWNJ}رود`);
+      expect(fixPersianTypography('نمی\u00A0\u00A0خواهد')).toBe(
+        `نمی${ZWNJ}خواهد`,
+      );
+    });
+
+    it('leaves empty or whitespace-only straight quotes unchanged as quotes', () => {
+      // horizontal-space-collapse may reduce inner spaces, but quote conversion
+      // does not fire when the trimmed inner segment is empty.
+      expect(fixPersianTypography('""')).toBe('""');
+      expect(fixPersianTypography('"   "')).toBe('" "');
+      expect(fixPersianTypography('" "')).toBe('" "');
+    });
+
+    it('trims NBSP inside guillemets and parentheses', () => {
+      expect(fixPersianTypography('«\u00A0کتاب\u00A0»')).toBe('«کتاب»');
+      expect(fixPersianTypography('(\u00A0متن\u00A0)')).toBe('(متن)');
+    });
+
     it('does not change text that already uses ZWNJ', () => {
       assertUnchanged(`می${ZWNJ}رود`);
     });

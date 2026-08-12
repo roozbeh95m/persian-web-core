@@ -96,6 +96,14 @@ describe('formatNumber', () => {
       ).toBe('1.2');
     });
 
+    it('supports only minimumFractionDigits', () => {
+      expect(formatNumber(1, { minimumFractionDigits: 2 })).toBe('1.00');
+    });
+
+    it('supports only maximumFractionDigits', () => {
+      expect(formatNumber(1.239, { maximumFractionDigits: 2 })).toBe('1.24');
+    });
+
     it('formats fa-IR decimals with precision', () => {
       const result = formatNumber(1.2, { locale: 'fa-IR', precision: 2 });
       expect(toEnglishDigits(result)).toBe('1٫20');
@@ -124,6 +132,21 @@ describe('formatNumber', () => {
         compactDisplay: 'long',
       });
       expect(result).toMatch(/میلیون/);
+    });
+
+    it('distinguishes short vs long compact display in en-US', () => {
+      expect(
+        formatNumber(1_200_000, {
+          notation: 'compact',
+          compactDisplay: 'short',
+        }),
+      ).toBe('1.2M');
+      expect(
+        formatNumber(1_200_000, {
+          notation: 'compact',
+          compactDisplay: 'long',
+        }),
+      ).toBe('1.2 million');
     });
   });
 

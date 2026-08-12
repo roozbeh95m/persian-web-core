@@ -41,9 +41,7 @@ describe('relativeTime', () => {
     });
 
     it('formats days ago beyond special phrases', () => {
-      expect(relativeTime(atOffset(-3 * DAY), { now: NOW })).toBe(
-        '۳ روز پیش',
-      );
+      expect(relativeTime(atOffset(-3 * DAY), { now: NOW })).toBe('۳ روز پیش');
     });
 
     it('formats weeks ago', () => {
@@ -53,15 +51,25 @@ describe('relativeTime', () => {
     });
 
     it('formats months ago', () => {
-      expect(relativeTime(atOffset(-60 * DAY), { now: NOW })).toBe(
-        '۲ ماه پیش',
-      );
+      expect(relativeTime(atOffset(-60 * DAY), { now: NOW })).toBe('۲ ماه پیش');
     });
 
     it('formats years ago', () => {
       expect(relativeTime(atOffset(-400 * DAY), { now: NOW })).toBe(
         'سال گذشته',
       );
+    });
+
+    it('formats multi-year spans beyond auto phrases', () => {
+      expect(relativeTime(atOffset(-800 * DAY), { now: NOW })).toBe(
+        '۲ سال پیش',
+      );
+      expect(
+        relativeTime(atOffset(-800 * DAY), {
+          now: NOW,
+          numeric: 'always',
+        }),
+      ).toBe('۲ سال پیش');
     });
   });
 
@@ -79,9 +87,7 @@ describe('relativeTime', () => {
     });
 
     it('formats hours ahead', () => {
-      expect(relativeTime(atOffset(3 * HOUR), { now: NOW })).toBe(
-        '۳ ساعت بعد',
-      );
+      expect(relativeTime(atOffset(3 * HOUR), { now: NOW })).toBe('۳ ساعت بعد');
     });
 
     it('formats tomorrow with numeric auto', () => {
@@ -89,27 +95,19 @@ describe('relativeTime', () => {
     });
 
     it('formats days ahead beyond special phrases', () => {
-      expect(relativeTime(atOffset(3 * DAY), { now: NOW })).toBe(
-        '۳ روز دیگر',
-      );
+      expect(relativeTime(atOffset(3 * DAY), { now: NOW })).toBe('۳ روز دیگر');
     });
 
     it('formats weeks ahead', () => {
-      expect(relativeTime(atOffset(2 * WEEK), { now: NOW })).toBe(
-        '۲ هفته بعد',
-      );
+      expect(relativeTime(atOffset(2 * WEEK), { now: NOW })).toBe('۲ هفته بعد');
     });
 
     it('formats months ahead', () => {
-      expect(relativeTime(atOffset(60 * DAY), { now: NOW })).toBe(
-        '۲ ماه بعد',
-      );
+      expect(relativeTime(atOffset(60 * DAY), { now: NOW })).toBe('۲ ماه بعد');
     });
 
     it('formats years ahead', () => {
-      expect(relativeTime(atOffset(400 * DAY), { now: NOW })).toBe(
-        'سال آینده',
-      );
+      expect(relativeTime(atOffset(400 * DAY), { now: NOW })).toBe('سال آینده');
     });
   });
 
@@ -273,9 +271,7 @@ describe('relativeTime', () => {
 
       const past = new Date(utcInstant.getTime() - 2 * HOUR);
       expect(relativeTime(past, { now: utcInstant })).toBe('۲ ساعت پیش');
-      expect(relativeTime(past, { now: tehranLikeLocal })).toBe(
-        '۲ ساعت پیش',
-      );
+      expect(relativeTime(past, { now: tehranLikeLocal })).toBe('۲ ساعت پیش');
     });
 
     it('is unchanged when the same delta crosses a civil midnight', () => {
@@ -298,12 +294,12 @@ describe('relativeTime', () => {
     });
 
     it('throws RangeError for an invalid now option', () => {
-      expect(() =>
-        relativeTime(NOW, { now: new Date(Number.NaN) }),
-      ).toThrow(RangeError);
-      expect(() =>
-        relativeTime(NOW, { now: new Date('not-a-date') }),
-      ).toThrow(RangeError);
+      expect(() => relativeTime(NOW, { now: new Date(Number.NaN) })).toThrow(
+        RangeError,
+      );
+      expect(() => relativeTime(NOW, { now: new Date('not-a-date') })).toThrow(
+        RangeError,
+      );
     });
 
     it('rejects non-Date values via instanceof check', () => {
@@ -318,9 +314,9 @@ describe('relativeTime', () => {
       expect(() => relativeTime(new Date(Number.NaN), { now: NOW })).toThrow(
         /date must be a valid Date/,
       );
-      expect(() =>
-        relativeTime(NOW, { now: new Date(Number.NaN) }),
-      ).toThrow(/options\.now must be a valid Date/);
+      expect(() => relativeTime(NOW, { now: new Date(Number.NaN) })).toThrow(
+        /options\.now must be a valid Date/,
+      );
     });
   });
 
@@ -354,9 +350,7 @@ describe('relativeTime', () => {
         '۲ ساعت پیش',
       );
       expect(relativeTime(atOffset(1 * DAY), { now: NOW })).toBe('فردا');
-      expect(relativeTime(atOffset(2 * WEEK), { now: NOW })).toBe(
-        '۲ هفته بعد',
-      );
+      expect(relativeTime(atOffset(2 * WEEK), { now: NOW })).toBe('۲ هفته بعد');
     });
   });
 });

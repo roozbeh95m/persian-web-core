@@ -24,6 +24,38 @@ describe('package exports and build layout', () => {
     });
   });
 
+  it('exposes the digits and normalize subpath exports', () => {
+    expect(packageJson.exports['./digits']).toEqual({
+      types: './dist/digits/index.d.ts',
+      import: './dist/digits/index.js',
+    });
+    expect(packageJson.exports['./normalize']).toEqual({
+      types: './dist/normalize/index.d.ts',
+      import: './dist/normalize/index.js',
+    });
+  });
+
+  it('root package.json exports cover every documented subpath', () => {
+    const expected = [
+      '.',
+      './digits',
+      './normalize',
+      './format',
+      './currency',
+      './phone',
+      './national-id',
+      './search',
+      './slug',
+      './typography',
+      './sort',
+      './date',
+      './direction',
+    ];
+    expect(Object.keys(packageJson.exports).sort()).toEqual(
+      [...expected].sort(),
+    );
+  });
+
   it('exposes the currency subpath export', () => {
     expect(packageJson.exports['./currency']).toEqual({
       types: './dist/currency/index.d.ts',

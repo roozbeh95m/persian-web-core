@@ -108,6 +108,39 @@ describe('getTextDirection', () => {
       expect(getTextDirection('...Hello!!!')).toBe('ltr');
     });
   });
+
+  describe('extended Unicode scripts', () => {
+    it('treats Arabic Supplement letters as RTL', () => {
+      // U+0750 ARABIC LETTER BEH WITH THREE DOTS HORIZONTALLY BELOW
+      expect(getTextDirection('\u0750')).toBe('rtl');
+      expect(isRTL('\u0750abc')).toBe(false);
+      expect(isMixedDirection('\u0750abc')).toBe(true);
+    });
+
+    it('treats Arabic Extended-A letters as RTL', () => {
+      // U+08A0 ARABIC LETTER BEH WITH SMALL V BELOW
+      expect(getTextDirection('\u08A0')).toBe('rtl');
+    });
+
+    it('treats Hebrew presentation forms as RTL', () => {
+      // U+FB1D HEBREW LETTER YOD WITH HIRIQ
+      expect(getTextDirection('\uFB1D')).toBe('rtl');
+    });
+
+    /**
+     * Contract note: scripts outside Latin/Arabic/Hebrew strong ranges
+     * (CJK, Cyrillic, emoji, etc.) are classified as neutral for direction
+     * purposes. UI consumers needing broader Unicode Bidirectional Algorithm
+     * coverage should use the platform Bidi APIs.
+     */
+    it('treats CJK, Cyrillic, and emoji as neutral (documented)', () => {
+      expect(getTextDirection('東京')).toBe('neutral');
+      expect(getTextDirection('Привет')).toBe('neutral');
+      expect(getTextDirection('🎹🎉')).toBe('neutral');
+      expect(getTextDirection('سلام 東京')).toBe('rtl');
+      expect(getTextDirection('Hello 東京')).toBe('ltr');
+    });
+  });
 });
 
 describe('isRTL', () => {

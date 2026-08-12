@@ -199,6 +199,116 @@ describe('formatCurrency', () => {
       });
       expect(result).toBe('۱۲٬۵۰۰٬۰۰۰ ریال ایران');
     });
+
+    it('formats negative IRT with name display in fa-IR', () => {
+      expect(
+        formatCurrency(-1_250_000, {
+          currency: 'IRT',
+          currencyDisplay: 'name',
+        }),
+      ).toBe('\u200e\u2212\u200e۱٬۲۵۰٬۰۰۰\u00a0تومان');
+    });
+
+    it('formats negative IRT with name display in en-US', () => {
+      expect(
+        formatCurrency(-1_250_000, {
+          currency: 'IRT',
+          locale: 'en-US',
+          currencyDisplay: 'name',
+        }),
+      ).toBe('-1,250,000\u00a0tomans');
+    });
+
+    it('treats IRT narrowSymbol like symbol (documented fallback)', () => {
+      expect(
+        formatCurrency(1_250_000, {
+          currency: 'IRT',
+          currencyDisplay: 'narrowSymbol',
+        }),
+      ).toBe('\u200eتومان\u00a0۱٬۲۵۰٬۰۰۰');
+      expect(
+        formatCurrency(1_250_000, {
+          currency: 'IRT',
+          locale: 'en-US',
+          currencyDisplay: 'narrowSymbol',
+        }),
+      ).toBe('IRT\u00a01,250,000');
+    });
+
+    it('treats locale tags starting with fa as Persian IRT layout', () => {
+      expect(
+        formatCurrency(1_250, {
+          currency: 'IRT',
+          locale: 'fa',
+          currencyDisplay: 'name',
+        }),
+      ).toBe('\u200e۱٬۲۵۰\u00a0تومان');
+    });
+  });
+
+  describe('fraction digit options', () => {
+    it('lets precision override min/max for IRT', () => {
+      expect(
+        formatCurrency(12.345, {
+          currency: 'IRT',
+          precision: 2,
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }),
+      ).toBe('\u200eتومان\u00a0۱۲٫۳۵');
+    });
+
+    /**
+     * Contract note: `resolveFractionDigits` merges overrides onto currency
+     * defaults. Setting only `minimumFractionDigits` above the default
+     * `maximumFractionDigits` (2 for USD/EUR) makes `Intl.NumberFormat` throw
+     * `RangeError`. Callers must keep min ≤ max.
+     */
+    it('throws when minimumFractionDigits exceeds default maximum for USD', () => {
+      expect(() =>
+        formatCurrency(10, {
+          currency: 'USD',
+          locale: 'en-US',
+          minimumFractionDigits: 3,
+        }),
+      ).toThrow(RangeError);
+    });
+
+    it('allows raising both min and max fraction digits for USD', () => {
+      expect(
+        formatCurrency(10, {
+          currency: 'USD',
+          locale: 'en-US',
+          minimumFractionDigits: 3,
+          maximumFractionDigits: 3,
+        }),
+      ).toBe('$10.000');
+    });
+
+    it('allows lowering maximumFractionDigits for USD when min stays valid', () => {
+      expect(
+        formatCurrency(10.999, {
+          currency: 'USD',
+          locale: 'en-US',
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 1,
+        }),
+      ).toBe('$11');
+    });
+
+    it('formats EUR in fa-IR', () => {
+      const result = formatCurrency(12.5, { currency: 'EUR', locale: 'fa-IR' });
+      expect(toEnglishDigits(result)).toMatch(/12٫50/u);
+    });
+
+    it('formats IRT NaN with name display layout', () => {
+      expect(
+        formatCurrency(Number.NaN, {
+          currency: 'IRT',
+          currencyDisplay: 'name',
+        }),
+      ).toBe('\u200eناعدد\u00a0تومان');
+    });
   });
 
   describe('non-finite values', () => {
