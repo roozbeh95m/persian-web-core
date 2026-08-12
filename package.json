@@ -76,7 +76,8 @@
     "docs"
   ],
   "scripts": {
-    "build": "./node_modules/typescript/bin/tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist",
+    "build": "npm run clean && ./node_modules/typescript/bin/tsc -p tsconfig.build.json",
     "typecheck": "./node_modules/typescript/bin/tsc --noEmit -p tsconfig.json",
     "lint": "./node_modules/eslint/bin/eslint.js .",
     "lint:fix": "./node_modules/eslint/bin/eslint.js . --fix",
@@ -87,6 +88,7 @@
     "size": "node ./scripts/check-bundle-size.mjs",
     "bench": "./node_modules/vitest/vitest.mjs bench",
     "benchmark": "./node_modules/vitest/vitest.mjs bench --run",
+    "prepack": "npm run build",
     "prepare": "./node_modules/husky/bin.js"
   },
   "publishConfig": {
