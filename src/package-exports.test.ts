@@ -52,6 +52,13 @@ describe('package exports and build layout', () => {
     });
   });
 
+  it('exposes the slug subpath export', () => {
+    expect(packageJson.exports['./slug']).toEqual({
+      types: './dist/slug/index.d.ts',
+      import: './dist/slug/index.js',
+    });
+  });
+
   it('exposes the typography subpath export', () => {
     expect(packageJson.exports['./typography']).toEqual({
       types: './dist/typography/index.d.ts',
@@ -87,6 +94,7 @@ describe('package exports and build layout', () => {
     expect(rootSource).toContain("from './phone/index.js'");
     expect(rootSource).toContain("from './national-id/index.js'");
     expect(rootSource).toContain("from './search/index.js'");
+    expect(rootSource).toContain("from './slug/index.js'");
     expect(rootSource).toContain("from './sort/index.js'");
     expect(rootSource).toContain("from './typography/index.js'");
     expect(rootSource).toContain("from './date/index.js'");
@@ -127,6 +135,13 @@ describe('package exports and build layout', () => {
     expect(searchSource).toContain('normalizeForSearch');
     expect(searchSource).toContain('includesPersian');
     expect(searchSource).not.toContain('formatNumber');
+  });
+
+  it('emits standalone slug build artifacts', () => {
+    const slugEntry = join(packageRoot, 'dist/slug/index.js');
+    const slugSource = readFileSync(slugEntry, 'utf8');
+    expect(slugSource).toContain('persianSlug');
+    expect(slugSource).not.toContain('formatNumber');
   });
 
   it('emits standalone typography build artifacts', () => {

@@ -11,6 +11,7 @@ export {
   matchesPersian,
   normalizeForSearch,
 } from './search/index.js';
+export { persianSlug } from './slug/index.js';
 export { createPersianCollator, sortPersian } from './sort/index.js';
 export {
   formatIranianPhone,

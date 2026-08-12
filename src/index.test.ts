@@ -10,6 +10,7 @@ import * as normalize from './normalize/index.js';
 import * as nationalId from './national-id/index.js';
 import * as phone from './phone/index.js';
 import * as search from './search/index.js';
+import * as slug from './slug/index.js';
 import * as sort from './sort/index.js';
 import * as typography from './typography/index.js';
 
@@ -96,6 +97,17 @@ describe('@persian-web/core', () => {
     expect(core.normalizeForSearch).toBe(search.normalizeForSearch);
     expect(core.matchesPersian).toBe(search.matchesPersian);
     expect(core.includesPersian).toBe(search.includesPersian);
+  });
+
+  it('exports persianSlug from the root entry', () => {
+    expect(core.persianSlug).toBeTypeOf('function');
+    expect(core.persianSlug('گوشی سامسونگ گلکسی S25')).toBe(
+      'گوشی-سامسونگ-گلکسی-s25',
+    );
+  });
+
+  it('re-exports the same function as @persian-web/core/slug', () => {
+    expect(core.persianSlug).toBe(slug.persianSlug);
   });
 
   it('exports fixPersianTypography from the root entry', () => {
