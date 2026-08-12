@@ -8,6 +8,7 @@ import * as normalize from './normalize/index.js';
 import * as nationalId from './national-id/index.js';
 import * as phone from './phone/index.js';
 import * as search from './search/index.js';
+import * as sort from './sort/index.js';
 import * as typography from './typography/index.js';
 
 describe('@persian-web/core', () => {
@@ -102,5 +103,16 @@ describe('@persian-web/core', () => {
 
   it('re-exports the same function as @persian-web/core/typography', () => {
     expect(core.fixPersianTypography).toBe(typography.fixPersianTypography);
+  });
+
+  it('exports Persian sort helpers from the root entry', () => {
+    expect(core.createPersianCollator).toBeTypeOf('function');
+    expect(core.sortPersian).toBeTypeOf('function');
+    expect(core.sortPersian(['ب', 'ا'])).toEqual(['ا', 'ب']);
+  });
+
+  it('re-exports the same functions as @persian-web/core/sort', () => {
+    expect(core.createPersianCollator).toBe(sort.createPersianCollator);
+    expect(core.sortPersian).toBe(sort.sortPersian);
   });
 });

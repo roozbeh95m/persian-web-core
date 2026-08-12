@@ -11,6 +11,7 @@ export {
   matchesPersian,
   normalizeForSearch,
 } from './search/index.js';
+export { createPersianCollator, sortPersian } from './sort/index.js';
 export {
   formatIranianPhone,
   isValidIranianPhone,
@@ -42,3 +43,9 @@ export type {
   NationalIdInvalidReason,
   ValidateNationalIdResult,
 } from './national-id/index.js';
+export type {
+  PersianCollator,
+  PersianCollatorOptions,
+  SortPersianDirection,
+  SortPersianOptions,
+} from './sort/index.js';

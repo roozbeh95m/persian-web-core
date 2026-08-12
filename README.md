@@ -383,18 +383,101 @@ validateNationalId('1111111111');
 
 Inputs are never mutated. Unrelated characters are not normalized away.
 
+## Sort
+
+Persian-aware string sorting built on `Intl.Collator` with normalized sort keys for predictable ordering across Arabic/Persian variants and mixed digit scripts.
+
+### `createPersianCollator(options?)`
+
+Creates a reusable collator for pairwise string comparison.
+
+```ts
+import { createPersianCollator } from '@persian-web/core';
+// or: import { createPersianCollator } from '@persian-web/core/sort';
+
+const collator = createPersianCollator();
+
+collator.compare('كلاسیک', 'کلاسیک'); // 0
+collator.compare('item 2', 'item 10'); // < 0
+
+['ب', 'ا', 'پ'].sort(collator.compare); // ['ا', 'ب', 'پ']
+```
+
+**Sort key normalization (always applied before `Intl.Collator`):**
+
+| Aspect                  | Behavior                                                      |
+| ----------------------- | ------------------------------------------------------------- |
+| Arabic/Persian variants | Yeh/Kaf fixes via `normalizePersian`                          |
+| Digits                  | English (`0–9`) when `normalizeDigits` is on (default)        |
+| Latin case              | ASCII `A–Z` folded to lowercase in sort keys                  |
+| Mixed Persian/Latin     | `Intl.Collator` with `fa-IR` locale                           |
+| Numeric sequences       | Natural order when `numeric` is on (default)                  |
+| Tie-breaking            | Variant sensitivity on normalized keys, then original strings |
+
+### `sortPersian(items, options?)`
+
+Sorts string arrays or object arrays via a typed `getKey` accessor.
+
+```ts
+import { sortPersian } from '@persian-web/core';
+// or: import { sortPersian } from '@persian-web/core/sort';
+
+sortPersian(['item 10', 'item 2']); // ['item 2', 'item 10']
+
+sortPersian([{ title: 'گوشی سامسونگ' }, { title: 'آیفون' }], {
+  getKey: (item) => item.title,
+});
+
+const list = ['ب', 'ا'];
+sortPersian(list, { inPlace: true }); // mutates list in place
+```
+
+By default, `sortPersian` returns a **new array** and leaves the input unchanged. Pass `{ inPlace: true }` to sort the input array in place.
+
+### Options
+
+| Option            | Default   | Description                                                 |
+| ----------------- | --------- | ----------------------------------------------------------- |
+| `locale`          | `'fa-IR'` | BCP 47 locale for `Intl.Collator`                           |
+| `numeric`         | `true`    | Natural numeric ordering (`2` before `10`)                  |
+| `sensitivity`     | `'base'`  | Collation sensitivity (`'base'` folds Latin case)           |
+| `normalizeDigits` | `true`    | Convert Persian/Arabic-Indic digits to English in sort keys |
+| `direction`       | `'asc'`   | `'asc'` or `'desc'` (`sortPersian` only)                    |
+| `getKey`          | identity  | Extract sort key from each item (`sortPersian` only)        |
+| `inPlace`         | `false`   | Mutate the input array when `true` (`sortPersian` only)     |
+| `collator`        | —         | Reuse a collator from `createPersianCollator`               |
+
+Pass either `collator` **or** collation options to `sortPersian`, not both.
+
+### Performance
+
+| Operation                   | Cost                                                                     | Guidance                                                                    |
+| --------------------------- | ------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
+| `createPersianCollator()`   | One-time `Intl.Collator` construction                                    | Reuse the returned collator when sorting many arrays                        |
+| `collator.compare(a, b)`    | O(m) per call — normalizes both strings, then compares                   | Best for occasional pairwise checks                                         |
+| `sortPersian(array)`        | O(n log n) comparisons; each key normalized once (Schwartzian transform) | Default collator is cached across calls                                     |
+| Large arrays (1k–10k items) | Dominated by comparison count and string length                          | Pass `{ collator }` to avoid option resolution; run `npm run bench` locally |
+
+Benchmarks live in `src/sort/persian-sort.bench.ts`. Run:
+
+```bash
+npm run bench
+```
+
 ## Entry points
 
-| Import                          | Exports                                                                                              |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `@persian-web/core`             | Full public API (digits + normalize + format + currency + phone + national-id + search + typography) |
-| `@persian-web/core/digits`      | `toPersianDigits`, `toEnglishDigits`                                                                 |
-| `@persian-web/core/normalize`   | `normalizePersian`, `NormalizePersianOptions`, `DigitNormalization`                                  |
-| `@persian-web/core/typography`  | `fixPersianTypography`                                                                               |
-| `@persian-web/core/format`      | `formatNumber`, `FormatNumberOptions`, `FormatNumberDigits`, `FormatNumberNotation`                  |
-| `@persian-web/core/currency`    | `formatCurrency`, `formatToman`, `formatRial`, currency types                                        |
-| `@persian-web/core/phone`       | `normalizePhone`, `isValidIranianPhone`, `formatIranianPhone`, phone types                           |
-| `@persian-web/core/national-id` | `isValidNationalId`, `validateNationalId`, `NationalIdInvalidReason`, `ValidateNationalIdResult`     |
+| Import                          | Exports                                                                                                     |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `@persian-web/core`             | Full public API (digits + normalize + format + currency + phone + national-id + search + sort + typography) |
+| `@persian-web/core/digits`      | `toPersianDigits`, `toEnglishDigits`                                                                        |
+| `@persian-web/core/normalize`   | `normalizePersian`, `NormalizePersianOptions`, `DigitNormalization`                                         |
+| `@persian-web/core/typography`  | `fixPersianTypography`                                                                                      |
+| `@persian-web/core/search`      | `normalizeForSearch`, `includesPersian`, `matchesPersian`                                                   |
+| `@persian-web/core/sort`        | `createPersianCollator`, `sortPersian`, sort types                                                          |
+| `@persian-web/core/format`      | `formatNumber`, `FormatNumberOptions`, `FormatNumberDigits`, `FormatNumberNotation`                         |
+| `@persian-web/core/currency`    | `formatCurrency`, `formatToman`, `formatRial`, currency types                                               |
+| `@persian-web/core/phone`       | `normalizePhone`, `isValidIranianPhone`, `formatIranianPhone`, phone types                                  |
+| `@persian-web/core/national-id` | `isValidNationalId`, `validateNationalId`, `NationalIdInvalidReason`, `ValidateNationalIdResult`            |
 
 ## License
 
