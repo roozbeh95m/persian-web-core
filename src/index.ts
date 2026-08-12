@@ -18,6 +18,7 @@ export {
   normalizePhone,
 } from './phone/index.js';
 export { isValidNationalId, validateNationalId } from './national-id/index.js';
+export { formatJalali, toGregorian, toJalali } from './date/index.js';
 export type {
   Currency,
   CurrencyDigits,
@@ -43,6 +44,13 @@ export type {
   NationalIdInvalidReason,
   ValidateNationalIdResult,
 } from './national-id/index.js';
+export type {
+  FormatJalaliDigits,
+  FormatJalaliOptions,
+  GregorianDate,
+  JalaliDate,
+  ToJalaliOptions,
+} from './date/index.js';
 export type {
   PersianCollator,
   PersianCollatorOptions,

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import * as core from './index.js';
 import * as currency from './currency/index.js';
+import * as date from './date/index.js';
 import * as digits from './digits/index.js';
 import * as format from './format/index.js';
 import * as normalize from './normalize/index.js';
@@ -114,5 +115,22 @@ describe('@persian-web/core', () => {
   it('re-exports the same functions as @persian-web/core/sort', () => {
     expect(core.createPersianCollator).toBe(sort.createPersianCollator);
     expect(core.sortPersian).toBe(sort.sortPersian);
+  });
+
+  it('exports Jalali date helpers from the root entry', () => {
+    expect(core.toJalali).toBeTypeOf('function');
+    expect(core.toGregorian).toBeTypeOf('function');
+    expect(core.formatJalali).toBeTypeOf('function');
+    expect(core.toJalali(2024, 3, 20)).toEqual({
+      year: 1403,
+      month: 1,
+      day: 1,
+    });
+  });
+
+  it('re-exports the same functions as @persian-web/core/date', () => {
+    expect(core.toJalali).toBe(date.toJalali);
+    expect(core.toGregorian).toBe(date.toGregorian);
+    expect(core.formatJalali).toBe(date.formatJalali);
   });
 });

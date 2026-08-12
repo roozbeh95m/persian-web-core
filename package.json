@@ -45,6 +45,10 @@
     "./sort": {
       "types": "./dist/sort/index.d.ts",
       "import": "./dist/sort/index.js"
+    },
+    "./date": {
+      "types": "./dist/date/index.d.ts",
+      "import": "./dist/date/index.js"
     }
   },
   "main": "./dist/index.js",

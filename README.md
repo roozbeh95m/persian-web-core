@@ -464,20 +464,87 @@ Benchmarks live in `src/sort/persian-sort.bench.ts`. Run:
 npm run bench
 ```
 
+## Date
+
+Minimal Jalali (Persian / Solar Hijri) calendar helpers. Conversion uses the
+[Borkowski algorithm](http://www.astro.uni.torun.pl/~kb/Papers/EMP/PersianC-EMP.htm)
+(same family as [jalaali-js](https://github.com/jalaali/jalaali-js)). Formatting
+is deterministic token-based — not delegated to `Intl`.
+
+`Intl.DateTimeFormat` with `calendar: 'persian'` is fine for **display-only**
+locale output, but it cannot convert Jalali → Gregorian, and `Date` input depends
+on the active time zone. These helpers cover conversion and stable formatting.
+
+### Time zone behavior
+
+| Input                                   | Behavior                                     |
+| --------------------------------------- | -------------------------------------------- |
+| `toJalali(year, month, day)`            | Pure calendar math — no time zone            |
+| `toGregorian(year, month, day)`         | Pure calendar math — no time zone            |
+| `toJalali(date)` / `formatJalali(date)` | Civil date in the **local** time zone        |
+| `…, { timeZone: 'UTC' }`                | Civil date read via `Intl` in that IANA zone |
+| `formatJalali({ year, month, day })`    | Already Jalali — no time zone applied        |
+
+### `toJalali(date | year, month?, day?, options?)`
+
+```ts
+import { toJalali } from '@persian-web/core';
+// or: import { toJalali } from '@persian-web/core/date';
+
+toJalali(2024, 3, 20);
+// { year: 1403, month: 1, day: 1 }
+
+toJalali(new Date('2024-03-20T00:00:00Z'), { timeZone: 'UTC' });
+// { year: 1403, month: 1, day: 1 }
+```
+
+### `toGregorian(year, month, day)`
+
+```ts
+import { toGregorian } from '@persian-web/core';
+
+toGregorian(1403, 1, 1);
+// { year: 2024, month: 3, day: 20 }
+
+toGregorian(1395, 12, 30);
+// { year: 2017, month: 3, day: 20 } — leap-year Esfand
+```
+
+Throws `RangeError` for invalid dates (e.g. Esfand 30 in a common year).
+
+### `formatJalali(date | { year, month, day }, options?)`
+
+```ts
+import { formatJalali } from '@persian-web/core';
+
+formatJalali({ year: 1403, month: 1, day: 1 });
+// '1403/01/01'
+
+formatJalali(new Date('2024-03-20T00:00:00Z'), {
+  timeZone: 'UTC',
+  pattern: 'YYYY-MM-DD',
+  digits: 'persian',
+});
+// '۱۴۰۳-۰۱-۰۱'
+```
+
+Supported pattern tokens: `YYYY`, `YY`, `MM`, `M`, `DD`, `D`.
+
 ## Entry points
 
-| Import                          | Exports                                                                                                     |
-| ------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `@persian-web/core`             | Full public API (digits + normalize + format + currency + phone + national-id + search + sort + typography) |
-| `@persian-web/core/digits`      | `toPersianDigits`, `toEnglishDigits`                                                                        |
-| `@persian-web/core/normalize`   | `normalizePersian`, `NormalizePersianOptions`, `DigitNormalization`                                         |
-| `@persian-web/core/typography`  | `fixPersianTypography`                                                                                      |
-| `@persian-web/core/search`      | `normalizeForSearch`, `includesPersian`, `matchesPersian`                                                   |
-| `@persian-web/core/sort`        | `createPersianCollator`, `sortPersian`, sort types                                                          |
-| `@persian-web/core/format`      | `formatNumber`, `FormatNumberOptions`, `FormatNumberDigits`, `FormatNumberNotation`                         |
-| `@persian-web/core/currency`    | `formatCurrency`, `formatToman`, `formatRial`, currency types                                               |
-| `@persian-web/core/phone`       | `normalizePhone`, `isValidIranianPhone`, `formatIranianPhone`, phone types                                  |
-| `@persian-web/core/national-id` | `isValidNationalId`, `validateNationalId`, `NationalIdInvalidReason`, `ValidateNationalIdResult`            |
+| Import                          | Exports                                                                                                            |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `@persian-web/core`             | Full public API (digits + normalize + format + currency + phone + national-id + search + sort + typography + date) |
+| `@persian-web/core/digits`      | `toPersianDigits`, `toEnglishDigits`                                                                               |
+| `@persian-web/core/normalize`   | `normalizePersian`, `NormalizePersianOptions`, `DigitNormalization`                                                |
+| `@persian-web/core/typography`  | `fixPersianTypography`                                                                                             |
+| `@persian-web/core/search`      | `normalizeForSearch`, `includesPersian`, `matchesPersian`                                                          |
+| `@persian-web/core/sort`        | `createPersianCollator`, `sortPersian`, sort types                                                                 |
+| `@persian-web/core/format`      | `formatNumber`, `FormatNumberOptions`, `FormatNumberDigits`, `FormatNumberNotation`                                |
+| `@persian-web/core/currency`    | `formatCurrency`, `formatToman`, `formatRial`, currency types                                                      |
+| `@persian-web/core/phone`       | `normalizePhone`, `isValidIranianPhone`, `formatIranianPhone`, phone types                                         |
+| `@persian-web/core/national-id` | `isValidNationalId`, `validateNationalId`, `NationalIdInvalidReason`, `ValidateNationalIdResult`                   |
+| `@persian-web/core/date`        | `toJalali`, `toGregorian`, `formatJalali`, date types                                                              |
 
 ## License
 

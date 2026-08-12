@@ -66,6 +66,13 @@ describe('package exports and build layout', () => {
     });
   });
 
+  it('exposes the date subpath export', () => {
+    expect(packageJson.exports['./date']).toEqual({
+      types: './dist/date/index.d.ts',
+      import: './dist/date/index.js',
+    });
+  });
+
   it('includes format in the root export graph only via explicit re-exports', () => {
     const rootSource = readFileSync(join(packageRoot, 'src/index.ts'), 'utf8');
     expect(rootSource).toContain("from './format/index.js'");
@@ -75,6 +82,7 @@ describe('package exports and build layout', () => {
     expect(rootSource).toContain("from './search/index.js'");
     expect(rootSource).toContain("from './sort/index.js'");
     expect(rootSource).toContain("from './typography/index.js'");
+    expect(rootSource).toContain("from './date/index.js'");
   });
 
   it('emits standalone format build artifacts', () => {
@@ -126,5 +134,14 @@ describe('package exports and build layout', () => {
     expect(sortSource).toContain('createPersianCollator');
     expect(sortSource).toContain('sortPersian');
     expect(sortSource).not.toContain('formatNumber');
+  });
+
+  it('emits standalone date build artifacts', () => {
+    const dateEntry = join(packageRoot, 'dist/date/index.js');
+    const dateSource = readFileSync(dateEntry, 'utf8');
+    expect(dateSource).toContain('toJalali');
+    expect(dateSource).toContain('toGregorian');
+    expect(dateSource).toContain('formatJalali');
+    expect(dateSource).not.toContain('normalizePersian');
   });
 });
