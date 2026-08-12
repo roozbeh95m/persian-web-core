@@ -134,17 +134,24 @@ describe('@persian-web/core', () => {
     expect(core.toJalali).toBeTypeOf('function');
     expect(core.toGregorian).toBeTypeOf('function');
     expect(core.formatJalali).toBeTypeOf('function');
+    expect(core.relativeTime).toBeTypeOf('function');
     expect(core.toJalali(2024, 3, 20)).toEqual({
       year: 1403,
       month: 1,
       day: 1,
     });
+    expect(
+      core.relativeTime(new Date('2024-06-15T11:57:00Z'), {
+        now: new Date('2024-06-15T12:00:00Z'),
+      }),
+    ).toBe('۳ دقیقه پیش');
   });
 
   it('re-exports the same functions as @persian-web/core/date', () => {
     expect(core.toJalali).toBe(date.toJalali);
     expect(core.toGregorian).toBe(date.toGregorian);
     expect(core.formatJalali).toBe(date.formatJalali);
+    expect(core.relativeTime).toBe(date.relativeTime);
   });
 
   it('exports text direction helpers from the root entry', () => {

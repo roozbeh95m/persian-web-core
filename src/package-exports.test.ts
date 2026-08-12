@@ -165,6 +165,7 @@ describe('package exports and build layout', () => {
     expect(dateSource).toContain('toJalali');
     expect(dateSource).toContain('toGregorian');
     expect(dateSource).toContain('formatJalali');
+    expect(dateSource).toContain('relativeTime');
     expect(dateSource).not.toContain('normalizePersian');
   });
 

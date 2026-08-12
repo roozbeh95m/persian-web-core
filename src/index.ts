@@ -19,7 +19,12 @@ export {
   normalizePhone,
 } from './phone/index.js';
 export { isValidNationalId, validateNationalId } from './national-id/index.js';
-export { formatJalali, toGregorian, toJalali } from './date/index.js';
+export {
+  formatJalali,
+  relativeTime,
+  toGregorian,
+  toJalali,
+} from './date/index.js';
 export {
   getTextDirection,
   isMixedDirection,
@@ -55,6 +60,8 @@ export type {
   FormatJalaliOptions,
   GregorianDate,
   JalaliDate,
+  RelativeTimeDigits,
+  RelativeTimeOptions,
   ToJalaliOptions,
 } from './date/index.js';
 export type {

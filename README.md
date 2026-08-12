@@ -530,21 +530,57 @@ formatJalali(new Date('2024-03-20T00:00:00Z'), {
 
 Supported pattern tokens: `YYYY`, `YY`, `MM`, `M`, `DD`, `D`.
 
+### `relativeTime(date, options?)`
+
+Formats how far a date is from a reference instant, in Persian, via
+`Intl.RelativeTimeFormat`. Units are chosen automatically (seconds through
+years). Past and future are both supported.
+
+```ts
+import { relativeTime } from '@persian-web/core';
+// or: import { relativeTime } from '@persian-web/core/date';
+
+const now = new Date('2024-06-15T12:00:00Z');
+
+relativeTime(new Date('2024-06-15T11:57:00Z'), { now });
+// '۳ دقیقه پیش'
+
+relativeTime(new Date('2024-06-15T10:00:00Z'), { now });
+// '۲ ساعت پیش'
+
+relativeTime(new Date('2024-06-16T12:00:00Z'), { now });
+// 'فردا'
+
+relativeTime(new Date('2024-06-29T12:00:00Z'), { now });
+// '۲ هفته بعد'
+```
+
+| Option    | Type                     | Default       | Notes                                                                 |
+| --------- | ------------------------ | ------------- | --------------------------------------------------------------------- |
+| `digits`  | `'persian' \| 'english'` | `'persian'`   | Digit script after formatting                                         |
+| `now`     | `Date`                   | `new Date()`  | Reference instant (pin this in tests)                                 |
+| `numeric` | `'auto' \| 'always'`     | `'auto'`      | `'auto'` allows phrases like `دیروز` / `فردا`; `'always'` stays numeric |
+
+**Time zone:** comparison uses absolute instants (`Date#getTime`). Civil time
+zones do not change the result. Invalid `date` or `options.now` throws
+`RangeError`.
+
 ## Entry points
 
-| Import                          | Exports                                                                                                            |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `@persian-web/core`             | Full public API (digits + normalize + format + currency + phone + national-id + search + sort + typography + date) |
-| `@persian-web/core/digits`      | `toPersianDigits`, `toEnglishDigits`                                                                               |
-| `@persian-web/core/normalize`   | `normalizePersian`, `NormalizePersianOptions`, `DigitNormalization`                                                |
-| `@persian-web/core/typography`  | `fixPersianTypography`                                                                                             |
-| `@persian-web/core/search`      | `normalizeForSearch`, `includesPersian`, `matchesPersian`                                                          |
-| `@persian-web/core/sort`        | `createPersianCollator`, `sortPersian`, sort types                                                                 |
-| `@persian-web/core/format`      | `formatNumber`, `FormatNumberOptions`, `FormatNumberDigits`, `FormatNumberNotation`                                |
-| `@persian-web/core/currency`    | `formatCurrency`, `formatToman`, `formatRial`, currency types                                                      |
-| `@persian-web/core/phone`       | `normalizePhone`, `isValidIranianPhone`, `formatIranianPhone`, phone types                                         |
-| `@persian-web/core/national-id` | `isValidNationalId`, `validateNationalId`, `NationalIdInvalidReason`, `ValidateNationalIdResult`                   |
-| `@persian-web/core/date`        | `toJalali`, `toGregorian`, `formatJalali`, date types                                                              |
+| Import                          | Exports                                                                                                                         |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `@persian-web/core`             | Full public API (digits + normalize + format + currency + phone + national-id + search + sort + typography + date + direction) |
+| `@persian-web/core/digits`      | `toPersianDigits`, `toEnglishDigits`                                                                                            |
+| `@persian-web/core/normalize`   | `normalizePersian`, `NormalizePersianOptions`, `DigitNormalization`                                                             |
+| `@persian-web/core/typography`  | `fixPersianTypography`                                                                                                          |
+| `@persian-web/core/search`      | `normalizeForSearch`, `includesPersian`, `matchesPersian`                                                                       |
+| `@persian-web/core/sort`        | `createPersianCollator`, `sortPersian`, sort types                                                                              |
+| `@persian-web/core/format`      | `formatNumber`, `FormatNumberOptions`, `FormatNumberDigits`, `FormatNumberNotation`                                             |
+| `@persian-web/core/currency`    | `formatCurrency`, `formatToman`, `formatRial`, currency types                                                                   |
+| `@persian-web/core/phone`       | `normalizePhone`, `isValidIranianPhone`, `formatIranianPhone`, phone types                                                      |
+| `@persian-web/core/national-id` | `isValidNationalId`, `validateNationalId`, `NationalIdInvalidReason`, `ValidateNationalIdResult`                                |
+| `@persian-web/core/date`        | `toJalali`, `toGregorian`, `formatJalali`, `relativeTime`, date types                                                           |
+| `@persian-web/core/direction`   | `getTextDirection`, `isRTL`, `isMixedDirection`, `TextDirection`                                                                |
 
 ## License
 
