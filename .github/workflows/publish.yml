@@ -7,7 +7,7 @@ on:
       dry_run:
         description: If true, only simulate publish; set false to publish to npm
         type: boolean
-        default: true
+        default: false
 
 permissions:
   contents: read
