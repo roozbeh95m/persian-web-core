@@ -1,16 +1,17 @@
 name: Publish
 
-# Manual only — do not publish on push/tag until release process is ready.
+# Manual only — run from Actions → Publish. Use dry_run=false for a live release.
 on:
   workflow_dispatch:
     inputs:
       dry_run:
-        description: Keep true until npm publishing is intentionally enabled
+        description: If true, only simulate publish; set false to publish to npm
         type: boolean
         default: true
 
 permissions:
   contents: read
+  id-token: write # Required for npm trusted publishing (OIDC)
 
 jobs:
   publish:
@@ -28,6 +29,10 @@ jobs:
           cache: npm
           registry-url: https://registry.npmjs.org
 
+      # Trusted publishing needs npm CLI >= 11.5.1
+      - name: Upgrade npm
+        run: npm install -g npm@latest
+
       - name: Install
         run: npm ci
         env:
@@ -36,11 +41,11 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
-      - name: Build
-        run: npm run build
-
       - name: Test
         run: npm test
+
+      - name: Build
+        run: npm run build
 
       - name: Bundle size
         run: npm run size
@@ -49,9 +54,6 @@ jobs:
         if: ${{ inputs.dry_run }}
         run: npm publish --dry-run --access public
 
-      - name: Publish blocked
+      - name: Publish
         if: ${{ !inputs.dry_run }}
-        run: |
-          echo "Live npm publish is not enabled yet."
-          echo "Keep dry_run=true, or wire NPM_TOKEN / trusted publishing when ready."
-          exit 1
+        run: npm publish --access public
