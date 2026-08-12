@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import * as core from './index.js';
 import * as currency from './currency/index.js';
 import * as date from './date/index.js';
+import * as direction from './direction/index.js';
 import * as digits from './digits/index.js';
 import * as format from './format/index.js';
 import * as normalize from './normalize/index.js';
@@ -132,5 +133,20 @@ describe('@persian-web/core', () => {
     expect(core.toJalali).toBe(date.toJalali);
     expect(core.toGregorian).toBe(date.toGregorian);
     expect(core.formatJalali).toBe(date.formatJalali);
+  });
+
+  it('exports text direction helpers from the root entry', () => {
+    expect(core.getTextDirection).toBeTypeOf('function');
+    expect(core.isRTL).toBeTypeOf('function');
+    expect(core.isMixedDirection).toBeTypeOf('function');
+    expect(core.getTextDirection('سلام')).toBe('rtl');
+    expect(core.isRTL('Hello سلام')).toBe(false);
+    expect(core.isMixedDirection('Hello سلام')).toBe(true);
+  });
+
+  it('re-exports the same functions as @persian-web/core/direction', () => {
+    expect(core.getTextDirection).toBe(direction.getTextDirection);
+    expect(core.isRTL).toBe(direction.isRTL);
+    expect(core.isMixedDirection).toBe(direction.isMixedDirection);
   });
 });

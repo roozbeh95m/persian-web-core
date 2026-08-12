@@ -19,6 +19,11 @@ export {
 } from './phone/index.js';
 export { isValidNationalId, validateNationalId } from './national-id/index.js';
 export { formatJalali, toGregorian, toJalali } from './date/index.js';
+export {
+  getTextDirection,
+  isMixedDirection,
+  isRTL,
+} from './direction/index.js';
 export type {
   Currency,
   CurrencyDigits,
@@ -57,3 +62,4 @@ export type {
   SortPersianDirection,
   SortPersianOptions,
 } from './sort/index.js';
+export type { TextDirection } from './direction/index.js';

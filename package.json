@@ -49,6 +49,10 @@
     "./date": {
       "types": "./dist/date/index.d.ts",
       "import": "./dist/date/index.js"
+    },
+    "./direction": {
+      "types": "./dist/direction/index.d.ts",
+      "import": "./dist/direction/index.js"
     }
   },
   "main": "./dist/index.js",

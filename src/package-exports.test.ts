@@ -73,6 +73,13 @@ describe('package exports and build layout', () => {
     });
   });
 
+  it('exposes the direction subpath export', () => {
+    expect(packageJson.exports['./direction']).toEqual({
+      types: './dist/direction/index.d.ts',
+      import: './dist/direction/index.js',
+    });
+  });
+
   it('includes format in the root export graph only via explicit re-exports', () => {
     const rootSource = readFileSync(join(packageRoot, 'src/index.ts'), 'utf8');
     expect(rootSource).toContain("from './format/index.js'");
@@ -83,6 +90,7 @@ describe('package exports and build layout', () => {
     expect(rootSource).toContain("from './sort/index.js'");
     expect(rootSource).toContain("from './typography/index.js'");
     expect(rootSource).toContain("from './date/index.js'");
+    expect(rootSource).toContain("from './direction/index.js'");
   });
 
   it('emits standalone format build artifacts', () => {
@@ -143,5 +151,14 @@ describe('package exports and build layout', () => {
     expect(dateSource).toContain('toGregorian');
     expect(dateSource).toContain('formatJalali');
     expect(dateSource).not.toContain('normalizePersian');
+  });
+
+  it('emits standalone direction build artifacts', () => {
+    const directionEntry = join(packageRoot, 'dist/direction/index.js');
+    const directionSource = readFileSync(directionEntry, 'utf8');
+    expect(directionSource).toContain('getTextDirection');
+    expect(directionSource).toContain('isRTL');
+    expect(directionSource).toContain('isMixedDirection');
+    expect(directionSource).not.toContain('normalizePersian');
   });
 });
